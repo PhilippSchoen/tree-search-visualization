@@ -19,6 +19,21 @@ describe('BreadthFirstSearch', () => {
         expect(node.location).toEqual(Location.Istanbul);
     });
 
+    test('Search should find the optimal path if initial state is goal state', () => {
+        const agent = new BreadthFirstSearch();
+        const node = agent.search({initialState: Location.Berlin, goalState: Location.Berlin});
+        expect(node.location).toEqual(Location.Berlin);
+        expect(node.parent).toBeUndefined();
+    });
+
+    test('Search should find the optimal path to its direct neighbor', () => {
+        const agent = new BreadthFirstSearch();
+        const node = agent.search({initialState: Location.Berlin, goalState: Location.Paris});
+        expect(node.location).toEqual(Location.Paris);
+        expect(node.parent.location).toEqual(Location.Berlin);
+        expect(node.parent.parent).toBeUndefined();
+    });
+
     test('Search should not find an impossible path', () => {
         const agent = new BreadthFirstSearch();
         const node = agent.search({initialState: Location.Berlin, goalState: Location.Mars});
