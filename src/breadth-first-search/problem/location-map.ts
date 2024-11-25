@@ -9,4 +9,5 @@ export const locationMap: Record<Location, Location[]> = {
     [Location.Bucharest]: [Location.Rome, Location.Istanbul],
     [Location.Budapest]: [Location.Vienna, Location.Istanbul],
     [Location.Istanbul]: [Location.Bucharest, Location.Budapest],
+    [Location.Mars]: [],
 }

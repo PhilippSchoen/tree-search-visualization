@@ -7,4 +7,5 @@ export enum Location {
     Bucharest,
     Budapest,
     Istanbul,
+    Mars,
 }
