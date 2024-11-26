@@ -1,16 +1,16 @@
-import {Location} from "./problem/location";
-import {locationMap} from "./problem/location-map";
+import {Location} from "./location";
+import {locationMap} from "./location-map";
 
 export class Node {
 
-    constructor(public location: Location, public parent?: Node) {
+    constructor(public location: Location, public parent?: Node, public cost: number = 0) {
     }
 
     expand(): Node[] {
         const locations = locationMap[this.location];
         const childNodes: Node[] = [];
-        for(let child of locations) {
-            childNodes.push(new Node(child, this));
+        for(const [location, cost] of locations.entries()) {
+            childNodes.push(new Node(location, this, cost));
         }
         return childNodes;
     }

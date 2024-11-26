@@ -1,8 +1,8 @@
 import {SearchProblem} from "../problem/search-problem";
-import {Location} from "../problem/location";
 import {Node} from "../problem/node";
+import {Location} from "../problem/location";
 
-export class BreadthFirstSearch {
+export class UniformCostSearch {
     search(problem: SearchProblem): Node {
         const node = new Node(problem.initialState);
         if(node.isGoalState(problem.goalState)) {
@@ -13,6 +13,8 @@ export class BreadthFirstSearch {
         const explored: Location[] = [node.location];
 
         while(frontier.length > 0) {
+            frontier.sort((a, b) => a.cost - b.cost);
+
             const currentNode = frontier.shift();
             for(let child of currentNode.expand()) {
                 const location = child.location;
@@ -38,7 +40,7 @@ export class BreadthFirstSearch {
         console.log("Memory used: ", (endMemory - startMemory) / 1024 / 1024, "MB");
         let solution = node.solution;
         let solutionKeys = solution.map(location => Location[location]);
-        console.log("BreadthFirst solution: ", solutionKeys.join(" -> "), "\n");
+        console.log("UniformCost solution: ", solutionKeys.join(" -> "), "\n");
         return node;
     }
 }

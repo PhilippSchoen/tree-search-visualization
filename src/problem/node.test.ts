@@ -1,5 +1,5 @@
-import {Location} from "../problem/location";
-import {Node} from "../node";
+import {Location} from "./location";
+import {Node} from "./node";
 
 describe('Node', () => {
    test('expand should return an array of nodes', () => {

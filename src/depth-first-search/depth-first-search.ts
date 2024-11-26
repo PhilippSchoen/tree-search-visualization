@@ -1,27 +1,24 @@
 import {SearchProblem} from "../problem/search-problem";
-import {Location} from "../problem/location";
 import {Node} from "../problem/node";
+import {Location} from "../problem/location";
 
-export class BreadthFirstSearch {
+export class DepthFirstSearch {
     search(problem: SearchProblem): Node {
-        const node = new Node(problem.initialState);
-        if(node.isGoalState(problem.goalState)) {
-            return node;
-        }
-
-        const frontier: Node[] = [node];
-        const explored: Location[] = [node.location];
+        const explored: Location[] = [];
+        const frontier: Node[] = []
+        frontier.push(new Node(problem.initialState));
+        explored.push(problem.initialState);
+        let node: Node;
 
         while(frontier.length > 0) {
-            const currentNode = frontier.shift();
-            for(let child of currentNode.expand()) {
-                const location = child.location;
-                if(child.isGoalState(problem.goalState)) {
-                    return child;
-                }
-                if(!explored.includes(location)) {
+            node = frontier.pop();
+            if(node.isGoalState(problem.goalState)) {
+                return node;
+            }
+            for(const child of node.expand()) {
+                if(!explored.includes(child.location)) {
+                    explored.push(child.location);
                     frontier.push(child);
-                    explored.push(location);
                 }
             }
         }
@@ -38,7 +35,7 @@ export class BreadthFirstSearch {
         console.log("Memory used: ", (endMemory - startMemory) / 1024 / 1024, "MB");
         let solution = node.solution;
         let solutionKeys = solution.map(location => Location[location]);
-        console.log("BreadthFirst solution: ", solutionKeys.join(" -> "), "\n");
+        console.log("DepthFirst solution: ", solutionKeys.join(" -> "), "\n");
         return node;
     }
 }
