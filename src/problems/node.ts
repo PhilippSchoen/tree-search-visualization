@@ -3,7 +3,12 @@ import {locationMap} from "./location-map";
 
 export class Node {
 
+    public depth: number = 0;
+
     constructor(public location: Location, public parent?: Node, public cost: number = 0) {
+        if(parent) {
+            this.depth = parent.depth + 1;
+        }
     }
 
     expand(): Node[] {

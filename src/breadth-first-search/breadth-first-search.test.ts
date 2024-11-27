@@ -1,5 +1,5 @@
 import {BreadthFirstSearch} from "./breadth-first-search";
-import {Location} from "../problem/location";
+import {Location} from "../problems/location";
 import {UniformCostSearch} from "../uniform-cost-search/uniform-cost-search";
 
 
@@ -42,16 +42,4 @@ describe('BreadthFirstSearch', () => {
         expect(node).toBeUndefined();
     });
 
-    test('searchWithLogs should find the same solution as search', () => {
-        const agent = new BreadthFirstSearch();
-        let node = agent.search({initialState: Location.Berlin, goalState: Location.Istanbul});
-        let nodeWithLogs = agent.searchWithLogs({initialState: Location.Berlin, goalState: Location.Istanbul});
-
-        expect(node.location).toEqual(nodeWithLogs.location);
-        while(node) {
-            expect(node.location).toEqual(nodeWithLogs.location);
-            node = node.parent;
-            nodeWithLogs = nodeWithLogs.parent;
-        }
-    });
 });

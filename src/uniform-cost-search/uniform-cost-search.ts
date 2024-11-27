@@ -1,8 +1,9 @@
-import {SearchProblem} from "../problem/search-problem";
-import {Node} from "../problem/node";
-import {Location} from "../problem/location";
+import {SearchProblem} from "../problems/search-problem";
+import {Node} from "../problems/node";
+import {Location} from "../problems/location";
+import {SearchAgent} from "../tree-search/search-agent";
 
-export class UniformCostSearch {
+export class UniformCostSearch extends SearchAgent<SearchProblem> {
     search(problem: SearchProblem): Node {
         const node = new Node(problem.initialState);
         if(node.isGoalState(problem.goalState)) {
@@ -31,16 +32,4 @@ export class UniformCostSearch {
         return undefined;
     }
 
-    searchWithLogs(problem: SearchProblem): Node {
-        let startMemory = process.memoryUsage().heapUsed;
-        console.time("Search time: ");
-        const node = this.search(problem);
-        console.timeEnd("Search time: ");
-        let endMemory = process.memoryUsage().heapUsed;
-        console.log("Memory used: ", (endMemory - startMemory) / 1024 / 1024, "MB");
-        let solution = node.solution;
-        let solutionKeys = solution.map(location => Location[location]);
-        console.log("UniformCost solution: ", solutionKeys.join(" -> "), "\n");
-        return node;
-    }
 }

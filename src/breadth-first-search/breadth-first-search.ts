@@ -1,8 +1,9 @@
-import {SearchProblem} from "../problem/search-problem";
-import {Location} from "../problem/location";
-import {Node} from "../problem/node";
+import {SearchProblem} from "../problems/search-problem";
+import {Location} from "../problems/location";
+import {Node} from "../problems/node";
+import {SearchAgent} from "../tree-search/search-agent";
 
-export class BreadthFirstSearch {
+export class BreadthFirstSearch extends SearchAgent<SearchProblem> {
     search(problem: SearchProblem): Node {
         const node = new Node(problem.initialState);
         if(node.isGoalState(problem.goalState)) {
@@ -29,16 +30,4 @@ export class BreadthFirstSearch {
         return undefined;
     }
 
-    searchWithLogs(problem: SearchProblem): Node {
-        let startMemory = process.memoryUsage().heapUsed;
-        console.time("Search time: ");
-        const node = this.search(problem);
-        console.timeEnd("Search time: ");
-        let endMemory = process.memoryUsage().heapUsed;
-        console.log("Memory used: ", (endMemory - startMemory) / 1024 / 1024, "MB");
-        let solution = node.solution;
-        let solutionKeys = solution.map(location => Location[location]);
-        console.log("BreadthFirst solution: ", solutionKeys.join(" -> "), "\n");
-        return node;
-    }
 }

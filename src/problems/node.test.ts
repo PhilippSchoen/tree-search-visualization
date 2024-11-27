@@ -42,4 +42,17 @@ describe('Node', () => {
 
       expect(parent2.solution).toEqual([Location.Berlin, Location.Paris, Location.London]);
    });
+
+   test('New node should have a depth of 0', () => {
+      const node = new Node(Location.Berlin);
+      expect(node.depth).toBe(0);
+   });
+
+   test('Deep child node should have the correct depth', () => {
+      const node = new Node(Location.Berlin);
+      const childNodes = node.expand();
+      const deepChild = childNodes[0].expand()[0];
+      expect(deepChild.depth).toBe(2);
+      expect(node.depth).toBe(0);
+   });
 });
