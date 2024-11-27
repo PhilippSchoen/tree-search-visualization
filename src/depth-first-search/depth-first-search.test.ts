@@ -1,4 +1,4 @@
-import {Location} from "../problems/location";
+import {Location} from "../problems/location-problem/location";
 import {DepthFirstSearch} from "./depth-first-search";
 import {BreadthFirstSearch} from "../breadth-first-search/breadth-first-search";
 import {UniformCostSearch} from "../uniform-cost-search/uniform-cost-search";

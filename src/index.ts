@@ -1,5 +1,5 @@
 import {BreadthFirstSearch} from "./breadth-first-search/breadth-first-search";
-import {Location} from "./problems/location";
+import {Location} from "./problems/location-problem/location";
 import {UniformCostSearch} from "./uniform-cost-search/uniform-cost-search";
 import {DepthFirstSearch} from "./depth-first-search/depth-first-search";
 import {DepthLimitedSearch} from "./depth-limited-search/depth-limited-search";

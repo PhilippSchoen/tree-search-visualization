@@ -1,6 +1,6 @@
 import {SearchAgent} from "./search-agent";
-import {Node} from "../problems/node";
-import {Location} from "../problems/location";
+import {LocationNode} from "../problems/location-problem/location-node";
+import {Location} from "../problems/location-problem/location";
 
 describe('SearchAgent', () => {
     test('searchWithLogs should find the same solution as search', () => {
@@ -18,7 +18,7 @@ describe('SearchAgent', () => {
 });
 
 class MockSearch extends SearchAgent<number> {
-    search(problem: number): Node {
-        return new Node(Location.Berlin);
+    search(problem: number): LocationNode {
+        return new LocationNode(Location.Berlin);
     }
 }

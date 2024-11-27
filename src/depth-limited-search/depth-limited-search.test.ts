@@ -1,4 +1,4 @@
-import {Location} from "../problems/location";
+import {Location} from "../problems/location-problem/location";
 import {DepthLimitedSearch} from "./depth-limited-search";
 
 describe('DepthLimitedSearch', () => {

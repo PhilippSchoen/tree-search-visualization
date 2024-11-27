@@ -1,20 +1,20 @@
-import {SearchProblem} from "../problems/search-problem";
-import {Location} from "../problems/location";
-import {Node} from "../problems/node";
+import {SearchProblem} from "../problems/location-problem/search-problem";
+import {Location} from "../problems/location-problem/location";
+import {LocationNode} from "../problems/location-problem/location-node";
 import {SearchAgent} from "../tree-search/search-agent";
 
-export class DepthLimitedSearch extends SearchAgent<SearchProblem> {
+export class DepthLimitedSearch extends SearchAgent<SearchProblem, LocationNode> {
 
     constructor(private limit: number) {
         super();
     }
 
-    search(problem: SearchProblem): Node {
+    search(problem: SearchProblem): LocationNode {
         const explored: Location[] = [];
-        const frontier: Node[] = [];
-        frontier.push(new Node(problem.initialState));
+        const frontier: LocationNode[] = [];
+        frontier.push(new LocationNode(problem.initialState));
         explored.push(problem.initialState);
-        let node: Node;
+        let node: LocationNode;
 
         while(frontier.length > 0) {
             node = frontier.pop();
@@ -22,7 +22,7 @@ export class DepthLimitedSearch extends SearchAgent<SearchProblem> {
                 return node;
             }
             for(const child of node.expand()) {
-                if(!explored.includes(child.location) && child.depth <= this.limit) {
+                if(!explored.includes(child.location) && (child.depth <= this.limit)) {
                     explored.push(child.location);
                     frontier.push(child);
                 }
