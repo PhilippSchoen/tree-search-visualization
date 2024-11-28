@@ -1,7 +1,8 @@
 import {BreadthFirstSearch} from "./breadth-first-search";
 import {Location} from "../problems/location-problem/location";
-import {UniformCostSearch} from "../uniform-cost-search/uniform-cost-search";
 import {LocationProblem} from "../problems/location-problem/location-problem";
+import {Node} from "../tree-search/node";
+import {SearchProblem} from "../problems/search-problem";
 
 
 describe('BreadthFirstSearch', () => {
@@ -9,6 +10,14 @@ describe('BreadthFirstSearch', () => {
         const agent = new BreadthFirstSearch();
         const node = agent.search(new LocationProblem(Location.Berlin, Location.Istanbul));
         expect(node.state).toEqual(Location.Istanbul);
+    });
+
+    test('Search should support different search problems', () => {
+        const agent = new BreadthFirstSearch();
+        const problem = new MockProblem(1, 5);
+        const node = agent.search(problem);
+        expect(node.state).toEqual(1);
+        expect(node.parent.state).toEqual(5);
     });
 
     test('Search should find the optimal path from Berlin to Istanbul', () => {
@@ -44,3 +53,38 @@ describe('BreadthFirstSearch', () => {
     });
 
 });
+
+class MockNode extends Node<number> {
+
+    constructor(public state: number, public parent?: MockNode, public depth: number = 0) {
+        super(state, parent, depth);
+    }
+
+    expand(): MockNode[] {
+        return [new MockNode(1, this), new MockNode(2, this), new MockNode(3, this)];
+    }
+
+    isGoalState(goal: number): boolean {
+        return goal === this.state;
+    }
+
+    printSolution(): void {
+    }
+
+    get solution(): number[] {
+        return [];
+    }
+
+}
+
+class MockProblem extends SearchProblem<number, MockNode> {
+
+    constructor(public goalState: number, public initialState: number) {
+        super();
+    }
+
+    createNode(state: number): MockNode {
+        return new MockNode(state);
+    }
+
+}

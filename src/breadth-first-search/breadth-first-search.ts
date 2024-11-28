@@ -1,29 +1,27 @@
-import {LocationProblem} from "../problems/location-problem/location-problem";
-import {Location} from "../problems/location-problem/location";
-import {LocationNode} from "../problems/location-problem/location-node";
 import {SearchAgent} from "../tree-search/search-agent";
 import {Node} from "../tree-search/node";
+import {SearchProblem} from "../problems/search-problem";
 
-export class BreadthFirstSearch<N extends Node<Location>> extends SearchAgent<LocationProblem, N> {
-    search(problem: LocationProblem): N {
+export class BreadthFirstSearch<State, N extends Node<State>, P extends SearchProblem<State, N>> extends SearchAgent<P, N> {
+    search(problem: P): N {
         const node = problem.createNode(problem.initialState);
         if(node.isGoalState(problem.goalState)) {
             return node as unknown as N;
         }
 
         const frontier: N[] = [node as unknown as N];
-        const explored: Location[] = [node.location];
+        const explored: State[] = [node.state];
 
         while(frontier.length > 0) {
             const currentNode = frontier.shift();
             for(let child of currentNode.expand()) {
-                const location = child.state;
+                const state = child.state;
                 if(child.isGoalState(problem.goalState)) {
                     return child as N;
                 }
-                if(!explored.includes(location)) {
+                if(!explored.includes(state)) {
                     frontier.push(child as N);
-                    explored.push(location);
+                    explored.push(state);
                 }
             }
         }
