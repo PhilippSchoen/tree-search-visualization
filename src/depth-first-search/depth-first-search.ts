@@ -1,10 +1,10 @@
-import {SearchProblem} from "../problems/location-problem/search-problem";
+import {LocationProblem} from "../problems/location-problem/location-problem";
 import {LocationNode} from "../problems/location-problem/location-node";
 import {Location} from "../problems/location-problem/location";
 import {SearchAgent} from "../tree-search/search-agent";
 
-export class DepthFirstSearch extends SearchAgent<SearchProblem, LocationNode> {
-    search(problem: SearchProblem): LocationNode {
+export class DepthFirstSearch extends SearchAgent<LocationProblem, LocationNode> {
+    search(problem: LocationProblem): LocationNode {
         const explored: Location[] = [];
         const frontier: LocationNode[] = []
         frontier.push(new LocationNode(problem.initialState));

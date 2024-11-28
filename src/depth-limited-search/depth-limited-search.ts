@@ -1,15 +1,15 @@
-import {SearchProblem} from "../problems/location-problem/search-problem";
+import {LocationProblem} from "../problems/location-problem/location-problem";
 import {Location} from "../problems/location-problem/location";
 import {LocationNode} from "../problems/location-problem/location-node";
 import {SearchAgent} from "../tree-search/search-agent";
 
-export class DepthLimitedSearch extends SearchAgent<SearchProblem, LocationNode> {
+export class DepthLimitedSearch extends SearchAgent<LocationProblem, LocationNode> {
 
     constructor(private limit: number) {
         super();
     }
 
-    search(problem: SearchProblem): LocationNode {
+    search(problem: LocationProblem): LocationNode {
         const explored: Location[] = [];
         const frontier: LocationNode[] = [];
         frontier.push(new LocationNode(problem.initialState));

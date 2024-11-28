@@ -1,10 +1,10 @@
-import {SearchProblem} from "../problems/location-problem/search-problem";
+import {LocationProblem} from "../problems/location-problem/location-problem";
 import {LocationNode} from "../problems/location-problem/location-node";
 import {Location} from "../problems/location-problem/location";
 import {SearchAgent} from "../tree-search/search-agent";
 
-export class UniformCostSearch extends SearchAgent<SearchProblem> {
-    search(problem: SearchProblem): LocationNode {
+export class UniformCostSearch extends SearchAgent<LocationProblem> {
+    search(problem: LocationProblem): LocationNode {
         const node = new LocationNode(problem.initialState);
         if(node.isGoalState(problem.goalState)) {
             return node;

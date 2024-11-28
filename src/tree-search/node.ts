@@ -14,4 +14,5 @@ export abstract class Node<State> {
     abstract get solution(): State[];
 
     abstract printSolution?(): void;
+    
 }
