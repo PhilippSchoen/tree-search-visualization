@@ -6,10 +6,10 @@ export class BreadthFirstSearch<State, N extends Node<State>, P extends SearchPr
     search(problem: P): N {
         const node = problem.createNode(problem.initialState);
         if(node.isGoalState(problem.goalState)) {
-            return node as unknown as N;
+            return node;
         }
 
-        const frontier: N[] = [node as unknown as N];
+        const frontier: N[] = [node];
         const explored: State[] = [node.state];
 
         while(frontier.length > 0) {
