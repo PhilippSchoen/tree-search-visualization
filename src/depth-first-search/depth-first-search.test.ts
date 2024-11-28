@@ -16,10 +16,10 @@ describe('DepthFirstSearch', () => {
 
     test('Search should support different search problems', () => {
         const agent = new DepthFirstSearch();
-        const problem = new MockProblem(1, 5);
+        const problem = new MockProblem("A", "Z");
         const node = agent.search(problem);
-        expect(node.state).toEqual(1);
-        expect(node.parent.state).toEqual(5);
+        expect(node.state).toEqual("A");
+        expect(node.parent.state).toEqual("Z");
     });
 
     test('Search should find the optimal path if initial state is goal state', () => {
@@ -43,36 +43,36 @@ describe('DepthFirstSearch', () => {
 
 });
 
-class MockNode extends Node<number> {
+class MockNode extends Node<string> {
 
-    constructor(public state: number, public parent?: MockNode, public depth: number = 0) {
+    constructor(public state: string, public parent?: MockNode, public depth: number = 0) {
         super(state, parent, depth);
     }
 
     expand(): MockNode[] {
-        return [new MockNode(1, this), new MockNode(2, this), new MockNode(3, this)];
+        return [new MockNode("A", this), new MockNode("B", this), new MockNode("C", this)];
     }
 
-    isGoalState(goal: number): boolean {
+    isGoalState(goal: string): boolean {
         return goal === this.state;
     }
 
     printSolution(): void {
     }
 
-    get solution(): number[] {
+    get solution(): string[] {
         return [];
     }
 
 }
 
-class MockProblem extends SearchProblem<number, MockNode> {
+class MockProblem extends SearchProblem<string, MockNode> {
 
-    constructor(public goalState: number, public initialState: number) {
+    constructor(public goalState: string, public initialState: string) {
         super();
     }
 
-    createNode(state: number): MockNode {
+    createNode(state: string): MockNode {
         return new MockNode(state);
     }
 
