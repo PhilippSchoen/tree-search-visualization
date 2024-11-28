@@ -35,11 +35,4 @@ describe('LocationNode', () => {
       expect(node.isGoalState(undefined)).toBe(false);
    });
 
-   test("solution should return the node's solution path, with the goal state being the last element", () => {
-      const node = new LocationNode(Location.Berlin);
-      const parent1 = new LocationNode(Location.Paris, node);
-      const parent2 = new LocationNode(Location.London, parent1);
-
-      expect(parent2.solution).toEqual([Location.Berlin, Location.Paris, Location.London]);
-   });
 });

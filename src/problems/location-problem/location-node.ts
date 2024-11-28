@@ -21,18 +21,6 @@ export class LocationNode extends Node<Location>{
         return this.location === goal;
     }
 
-    get solution(): Location[] {
-        const solution: Location[] = [];
-        let node: LocationNode = this;
-
-        while(node) {
-            solution.push(node.location);
-            node = node.parent;
-        }
-
-        return solution.reverse();
-    }
-
     printSolution() {
         let solutionKeys = this.solution.map(location => Location[location]);
         console.log(this.constructor.name + " solution: ", solutionKeys.join(" -> "), "\n");

@@ -1,3 +1,5 @@
+import {Position} from "../problems/pathfinding-problem/position";
+
 export abstract class Node<State> {
     public depth: number = 0;
 
@@ -11,7 +13,17 @@ export abstract class Node<State> {
 
     abstract isGoalState(goal: State): boolean;
 
-    abstract get solution(): State[];
+    get solution(): State[] {
+        const solution: State[] = [];
+        let node: Node<State> = this;
+
+        while(node) {
+            solution.push(node.state);
+            node = node.parent;
+        }
+
+        return solution.reverse();
+    }
 
     abstract printSolution?(): void;
     

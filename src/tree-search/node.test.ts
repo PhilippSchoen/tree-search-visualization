@@ -1,5 +1,7 @@
 
 import {Node} from "./node";
+import {LocationNode} from "../problems/location-problem/location-node";
+import {Location} from "../problems/location-problem/location";
 
 describe('Node', () => {
     test('New node should have a depth of 0', () => {
@@ -13,6 +15,14 @@ describe('Node', () => {
         const deepChild = childNodes[0].expand()[0];
         expect(deepChild.depth).toBe(2);
         expect(node.depth).toBe(0);
+    });
+
+    test("solution should return the node's solution path, with the goal state being the last element", () => {
+        const node = new LocationNode(Location.Berlin);
+        const parent1 = new LocationNode(Location.Paris, node);
+        const parent2 = new LocationNode(Location.London, parent1);
+
+        expect(parent2.solution).toEqual([Location.Berlin, Location.Paris, Location.London]);
     });
 });
 
