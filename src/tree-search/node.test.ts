@@ -21,7 +21,7 @@ class MockNode extends Node<number> {
         super(state, parent, cost);
     }
 
-    expand(): Node<number>[] {
+    expand(): MockNode[] {
         return [new MockNode(1, this)];
     }
 

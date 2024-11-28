@@ -1,6 +1,7 @@
 import {SearchAgent} from "./search-agent";
 import {LocationNode} from "../problems/location-problem/location-node";
 import {Location} from "../problems/location-problem/location";
+import {Node} from "./node";
 
 describe('SearchAgent', () => {
     test('searchWithLogs should find the same solution as search', () => {
@@ -8,17 +9,40 @@ describe('SearchAgent', () => {
         let node = agent.search(1);
         let nodeWithLogs = agent.searchWithLogs(1);
 
-        expect(node.location).toEqual(nodeWithLogs.location);
+        expect(node.state).toEqual(nodeWithLogs.state);
         while(node) {
-            expect(node.location).toEqual(nodeWithLogs.location);
+            expect(node.state).toEqual(nodeWithLogs.state);
             node = node.parent;
             nodeWithLogs = nodeWithLogs.parent;
         }
     });
 });
 
-class MockSearch extends SearchAgent<number> {
-    search(problem: number): LocationNode {
-        return new LocationNode(Location.Berlin);
+class MockSearch extends SearchAgent<number, MockNode> {
+    search(problem: number): MockNode {
+        return new MockNode(5);
     }
+}
+
+class MockNode extends Node<number> {
+
+    constructor(public state: number, public parent?: MockNode, public depth: number = 0) {
+        super(state, parent, depth);
+    }
+
+    expand(): MockNode[] {
+        return [];
+    }
+
+    isGoalState(goal: number): boolean {
+        return false;
+    }
+
+    printSolution(): void {
+    }
+
+    get solution(): number[] {
+        return [];
+    }
+
 }
