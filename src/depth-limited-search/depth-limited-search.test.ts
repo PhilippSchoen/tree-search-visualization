@@ -1,7 +1,6 @@
 import {Location} from "../problems/location-problem/location";
 import {DepthLimitedSearch} from "./depth-limited-search";
 import {LocationProblem} from "../problems/location-problem/location-problem";
-import {BreadthFirstSearch} from "../breadth-first-search/breadth-first-search";
 import {Node} from "../tree-search/node";
 import {SearchProblem} from "../problems/search-problem";
 

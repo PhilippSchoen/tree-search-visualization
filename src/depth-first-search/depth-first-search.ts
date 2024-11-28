@@ -1,25 +1,24 @@
-import {LocationProblem} from "../problems/location-problem/location-problem";
-import {LocationNode} from "../problems/location-problem/location-node";
-import {Location} from "../problems/location-problem/location";
 import {SearchAgent} from "../tree-search/search-agent";
+import {Node} from "../tree-search/node";
+import {SearchProblem} from "../problems/search-problem";
 
-export class DepthFirstSearch extends SearchAgent<LocationProblem, LocationNode> {
-    search(problem: LocationProblem): LocationNode {
-        const explored: Location[] = [];
-        const frontier: LocationNode[] = []
-        frontier.push(new LocationNode(problem.initialState));
+export class DepthFirstSearch<State, N extends Node<State>, P extends SearchProblem<State, N>> extends SearchAgent<P, N> {
+    search(problem: P): N {
+        const explored: State[] = [];
+        const frontier: N[] = []
+        frontier.push(problem.createNode(problem.initialState));
         explored.push(problem.initialState);
-        let node: LocationNode;
+        let node: N;
 
         while(frontier.length > 0) {
             node = frontier.pop();
             if(node.isGoalState(problem.goalState)) {
-                return node;
+                return node as N;
             }
             for(const child of node.expand()) {
-                if(!explored.includes(child.location)) {
-                    explored.push(child.location);
-                    frontier.push(child);
+                if(!explored.includes(child.state)) {
+                    explored.push(child.state);
+                    frontier.push(child as N);
                 }
             }
         }
