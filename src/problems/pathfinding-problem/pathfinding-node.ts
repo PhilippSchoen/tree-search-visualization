@@ -19,7 +19,7 @@ export class PathfindingNode extends Node<Position> {
     }
 
     isGoalState(goal: Position): boolean {
-        return (this.position.x === goal?.x && this.position.y === goal?.y);
+        return this.position.equals(goal);
     }
 
     printSolution(): void {

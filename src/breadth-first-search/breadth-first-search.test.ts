@@ -4,6 +4,7 @@ import {LocationProblem} from "../problems/location-problem/location-problem";
 import {Node} from "../tree-search/node";
 import {SearchProblem} from "../problems/search-problem";
 
+// TODO: Cover object problem with tests
 
 describe('BreadthFirstSearch', () => {
     test('Search should find a path from Berlin to Istanbul', () => {

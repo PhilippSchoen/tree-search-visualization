@@ -1,8 +1,10 @@
 import {SearchAgent} from "../tree-search/search-agent";
 import {Node} from "../tree-search/node";
 import {SearchProblem} from "../problems/search-problem";
+import {Primitive} from "../tree-search/primitive";
+import {State} from "../tree-search/state";
 
-export class UniformCostSearch<State, N extends Node<State>, P extends SearchProblem<State, N>> extends SearchAgent<P, N> {
+export class UniformCostSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
         const node = problem.createNode(problem.initialState);
         if(node.isGoalState(problem.goalState)) {
@@ -10,7 +12,7 @@ export class UniformCostSearch<State, N extends Node<State>, P extends SearchPro
         }
 
         const frontier: N[] = [node];
-        const explored: State[] = [node.state];
+        const explored: S[] = [node.state];
 
         while(frontier.length > 0) {
             frontier.sort((a, b) => a.cost - b.cost);
@@ -21,9 +23,18 @@ export class UniformCostSearch<State, N extends Node<State>, P extends SearchPro
                 if(child.isGoalState(problem.goalState)) {
                     return child as N;
                 }
-                if(!explored.includes(location)) {
-                    frontier.push(child as N);
-                    explored.push(location);
+                const state = child.state;
+                if(this.isPrimitiveValue(state)) {
+                    if(!explored.includes(state)) {
+                        frontier.push(child as N);
+                        explored.push(state);
+                    }
+                }
+                else {
+                    if(!explored.some(s => (s as State).equals(state))) {
+                        frontier.push(child as N);
+                        explored.push(state);
+                    }
                 }
             }
         }

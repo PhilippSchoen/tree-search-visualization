@@ -1,10 +1,12 @@
 import {SearchAgent} from "../tree-search/search-agent";
 import {Node} from "../tree-search/node";
 import {SearchProblem} from "../problems/search-problem";
+import {State} from "../tree-search/state";
+import {Primitive} from "../tree-search/primitive";
 
-export class DepthFirstSearch<State, N extends Node<State>, P extends SearchProblem<State, N>> extends SearchAgent<P, N> {
+export class DepthFirstSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
-        const explored: State[] = [];
+        const explored: S[] = [];
         const frontier: N[] = []
         frontier.push(problem.createNode(problem.initialState));
         explored.push(problem.initialState);
@@ -16,9 +18,18 @@ export class DepthFirstSearch<State, N extends Node<State>, P extends SearchProb
                 return node as N;
             }
             for(const child of node.expand()) {
-                if(!explored.includes(child.state)) {
-                    explored.push(child.state);
-                    frontier.push(child as N);
+                const state = child.state;
+                if(this.isPrimitiveValue(state)) {
+                    if(!explored.includes(state)) {
+                        frontier.push(child as N);
+                        explored.push(state);
+                    }
+                }
+                else {
+                    if(!explored.some(s => (s as State).equals(state))) {
+                        frontier.push(child as N);
+                        explored.push(state);
+                    }
                 }
             }
         }
