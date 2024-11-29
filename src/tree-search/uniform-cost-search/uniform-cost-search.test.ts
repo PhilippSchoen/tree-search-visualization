@@ -1,9 +1,9 @@
-import {Location} from "../problems/location-problem/location";
+import {Location} from "../../problems/location-problem/location";
 import {UniformCostSearch} from "./uniform-cost-search";
 import {BreadthFirstSearch} from "../breadth-first-search/breadth-first-search";
-import {Node} from "../tree-search/node";
-import {SearchProblem} from "../problems/search-problem";
-import {LocationProblem} from "../problems/location-problem/location-problem";
+import {Node} from "../node";
+import {SearchProblem} from "../../problems/search-problem";
+import {LocationProblem} from "../../problems/location-problem/location-problem";
 
 describe('UniformCostSearch', () => {
     test('Search should find a path from Berlin to Istanbul', () => {

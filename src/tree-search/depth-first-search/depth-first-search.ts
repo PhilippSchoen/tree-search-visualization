@@ -1,8 +1,8 @@
-import {SearchAgent} from "../tree-search/search-agent";
-import {Node} from "../tree-search/node";
-import {SearchProblem} from "../problems/search-problem";
-import {State} from "../tree-search/state";
-import {Primitive} from "../tree-search/primitive";
+import {SearchAgent} from "../search-agent";
+import {Node} from "../node";
+import {SearchProblem} from "../../problems/search-problem";
+import {State} from "../state";
+import {Primitive} from "../primitive";
 
 export class DepthFirstSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {

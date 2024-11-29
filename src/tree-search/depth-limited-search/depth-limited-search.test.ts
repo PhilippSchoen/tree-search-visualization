@@ -1,8 +1,8 @@
-import {Location} from "../problems/location-problem/location";
+import {Location} from "../../problems/location-problem/location";
 import {DepthLimitedSearch} from "./depth-limited-search";
-import {LocationProblem} from "../problems/location-problem/location-problem";
-import {Node} from "../tree-search/node";
-import {SearchProblem} from "../problems/search-problem";
+import {LocationProblem} from "../../problems/location-problem/location-problem";
+import {Node} from "../node";
+import {SearchProblem} from "../../problems/search-problem";
 
 describe('DepthLimitedSearch', () => {
     test('Search should find a path from Berlin to Istanbul', () => {
