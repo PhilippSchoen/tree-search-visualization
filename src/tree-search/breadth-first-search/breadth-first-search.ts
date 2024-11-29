@@ -6,8 +6,8 @@ import {State} from "../state";
 
 export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
-        const node = problem.createNode(problem.initialState);
-        if(node.isGoalState(problem.goalState)) {
+        const node = problem.createNode(problem.initialState, problem.goalState);
+        if(node.isGoalState()) {
             return node;
         }
 
@@ -18,7 +18,7 @@ export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, 
             const currentNode = frontier.shift();
             for(let child of currentNode.expand()) {
                 const state = child.state;
-                if(child.isGoalState(problem.goalState)) {
+                if(child.isGoalState()) {
                     return child as N;
                 }
                 if(this.isPrimitiveValue(state)) {

@@ -5,15 +5,16 @@ import {DepthFirstSearch} from "./tree-search/depth-first-search/depth-first-sea
 import {DepthLimitedSearch} from "./tree-search/depth-limited-search/depth-limited-search";
 import {LocationProblem} from "./problems/location-problem/location-problem";
 import {PathfindingProblem} from "./problems/pathfinding-problem/pathfinding-problem";
-import {EightPuzzleNode} from "./problems/eight-puzzle-problem/eight-puzzle-node";
 import {EightPuzzleState} from "./problems/eight-puzzle-problem/eight-puzzle-state";
 import {EightPuzzleProblem} from "./problems/eight-puzzle-problem/eight-puzzle-problem";
 import {Position} from "./problems/pathfinding-problem/position";
+import {GreedyBestFirstSearch} from "./tree-search/greedy-best-first-search/greedy-best-first-search";
 
 const breadthFirstAgent = new BreadthFirstSearch();
 const uniformCostAgent = new UniformCostSearch();
 const depthFirstAgent = new DepthFirstSearch();
 const depthLimitedAgent = new DepthLimitedSearch(10);
+const greedyBestFirstAgent = new GreedyBestFirstSearch();
 
 const pathfindingProblem = new PathfindingProblem(new Position(10, 7), new Position(7, 10));
 const solutionState = new EightPuzzleState();
@@ -43,3 +44,8 @@ depthLimitedAgent.searchWithLogs(eightPuzzleProblem);
 console.log("Finally, find the best path from (10, 7) to (7, 10)! \n");
 depthLimitedAgent.searchWithLogs(pathfindingProblem);
 breadthFirstAgent.searchWithLogs(pathfindingProblem);
+greedyBestFirstAgent.searchWithLogs(pathfindingProblem);
+
+console.log("Now, a complex pathfinding problem for informed search algorithms! \n");
+const pathfindingProblem2 = new PathfindingProblem(new Position(-7, 25), new Position(122, -8));
+greedyBestFirstAgent.searchWithLogs(pathfindingProblem2);

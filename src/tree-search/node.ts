@@ -1,9 +1,11 @@
-import {Position} from "../problems/pathfinding-problem/position";
-
 export abstract class Node<State> {
     public depth: number = 0;
 
-    protected constructor(public state: State, public parent?: Node<State>, public cost: number = 0) {
+    protected constructor(
+        public state: State, public goalState: State,
+        public parent?: Node<State>,
+        public cost: number = 0, public heuristic: number = 0)
+    {
         if(parent) {
             this.depth = parent.depth + 1;
         }
@@ -11,7 +13,7 @@ export abstract class Node<State> {
 
     abstract expand(): Node<State>[];
 
-    abstract isGoalState(goal: State): boolean;
+    abstract isGoalState(): boolean;
 
     get solution(): State[] {
         const solution: State[] = [];

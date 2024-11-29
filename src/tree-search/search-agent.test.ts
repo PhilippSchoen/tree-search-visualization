@@ -20,21 +20,21 @@ describe('SearchAgent', () => {
 
 class MockSearch extends SearchAgent<number, MockNode> {
     search(problem: number): MockNode {
-        return new MockNode(5);
+        return new MockNode(5, 10);
     }
 }
 
 class MockNode extends Node<number> {
 
-    constructor(public state: number, public parent?: MockNode, public depth: number = 0) {
-        super(state, parent, depth);
+    constructor(public state: number, public goalState: number, public parent?: MockNode, public depth: number = 0) {
+        super(state, goalState, parent, depth);
     }
 
     expand(): MockNode[] {
         return [];
     }
 
-    isGoalState(goal: number): boolean {
+    isGoalState(): boolean {
         return false;
     }
 

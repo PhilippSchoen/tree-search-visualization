@@ -13,13 +13,13 @@ export class DepthLimitedSearch<S extends Primitive | State, N extends Node<S>, 
     search(problem: P): N {
         const explored: S[] = [];
         const frontier: N[] = [];
-        frontier.push(problem.createNode(problem.initialState));
+        frontier.push(problem.createNode(problem.initialState, problem.goalState));
         explored.push(problem.initialState);
         let node: N;
 
         while(frontier.length > 0) {
             node = frontier.pop();
-            if(node.isGoalState(problem.goalState)) {
+            if(node.isGoalState()) {
                 return node as N;
             }
             for(const child of node.expand()) {

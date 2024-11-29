@@ -7,25 +7,22 @@ describe('EightPuzzleNode', () => {
         const state = new EightPuzzleState();
         state.board = [1, 2, 3, 4, 5, 6, 7, 8, 0];
         const node = new EightPuzzleNode(state);
-        const completedBoard: EightPuzzlePiece[] = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-        expect(node.isGoalState({board: completedBoard} as EightPuzzleState)).toBe(true);
-
-        node.printSolution();
+        expect(node.isGoalState()).toBe(true);
     });
 
     test('isGoalState should return false if board is not goal', () => {
         const state = new EightPuzzleState();
         state.board = [4, 7, 5, 3, 1, 8, 2, 6, 0];
         const node = new EightPuzzleNode(state);
-        const completedBoard: EightPuzzlePiece[] = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-        expect(node.isGoalState({board: completedBoard} as EightPuzzleState)).toBe(false);
+        expect(node.isGoalState()).toBe(false);
     });
 
     test('isGoalState should return false if goal state is undefined', () => {
         const state = new EightPuzzleState();
         state.board = [1, 2, 3, 4, 5, 6, 7, 8, 0];
         const node = new EightPuzzleNode(state);
-        expect(node.isGoalState(undefined)).toBe(false);
+        node.goalState = undefined;
+        expect(node.isGoalState()).toBe(false);
     });
 
     test('Expanding while 0 is in the center should return the correct 4 nodes', () => {
@@ -42,13 +39,13 @@ describe('EightPuzzleNode', () => {
             [1, 2, 3, 4, 7, 5, 6, 0, 8],
         ]);
 
-        let childNode = childNodes.find(node => node.isGoalState(resultingStates[0]));
+        let childNode = childNodes.find(node => node.state.equals(resultingStates[0]));
         expect(childNode).toBeDefined();
-        childNode = childNodes.find(node => node.isGoalState(resultingStates[1]));
+        childNode = childNodes.find(node => node.state.equals(resultingStates[1]));
         expect(childNode).toBeDefined();
-        childNode = childNodes.find(node => node.isGoalState(resultingStates[2]));
+        childNode = childNodes.find(node => node.state.equals(resultingStates[2]));
         expect(childNode).toBeDefined();
-        childNode = childNodes.find(node => node.isGoalState(resultingStates[3]));
+        childNode = childNodes.find(node => node.state.equals(resultingStates[3]));
         expect(childNode).toBeDefined();
     });
 
@@ -64,9 +61,9 @@ describe('EightPuzzleNode', () => {
         ]);
 
         expect(childNodes.length).toBe(2);
-        let childNode = childNodes.find(node => node.isGoalState(resultingStates[0]));
+        let childNode = childNodes.find(node => node.state.equals(resultingStates[0]));
         expect(childNode).toBeDefined();
-        childNode = childNodes.find(node => node.isGoalState(resultingStates[1]));
+        childNode = childNodes.find(node => node.state.equals(resultingStates[1]));
         expect(childNode).toBeDefined();
     });
 
@@ -83,11 +80,11 @@ describe('EightPuzzleNode', () => {
         ]);
 
         expect(childNodes.length).toBe(3);
-        let childNode = childNodes.find(node => node.isGoalState(resultingStates[0]));
+        let childNode = childNodes.find(node => node.state.equals(resultingStates[0]));
         expect(childNode).toBeDefined();
-        childNode = childNodes.find(node => node.isGoalState(resultingStates[1]));
+        childNode = childNodes.find(node => node.state.equals(resultingStates[1]));
         expect(childNode).toBeDefined();
-        childNode = childNodes.find(node => node.isGoalState(resultingStates[2]));
+        childNode = childNodes.find(node => node.state.equals(resultingStates[2]));
         expect(childNode).toBeDefined();
     });
 });

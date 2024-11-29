@@ -7,7 +7,7 @@ export class PathfindingProblem extends SearchProblem<Position, PathfindingNode>
         super();
     }
 
-    createNode(state: Position): PathfindingNode {
-        return new PathfindingNode(state);
+    createNode(state: Position, goalState: Position): PathfindingNode {
+        return new PathfindingNode(state, goalState);
     }
 }

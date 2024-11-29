@@ -7,7 +7,7 @@ export class EightPuzzleProblem extends SearchProblem<EightPuzzleState, EightPuz
         super();
     }
 
-    createNode(state: EightPuzzleState): EightPuzzleNode {
+    createNode(state: EightPuzzleState, goalState: EightPuzzleState = undefined): EightPuzzleNode {
         return new EightPuzzleNode(state);
     }
 }

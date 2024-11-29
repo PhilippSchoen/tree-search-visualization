@@ -3,8 +3,13 @@ import {Node} from "../../tree-search/node";
 
 export class EightPuzzleNode extends Node<EightPuzzleState> {
 
-    constructor(public state: EightPuzzleState, public parent?: EightPuzzleNode, public cost: number = 0) {
-        super(state, parent, cost);
+    constructor(public state: EightPuzzleState, public goalState: EightPuzzleState = undefined, public parent?: EightPuzzleNode, public cost: number = 0) {
+        super(state, goalState, parent, cost);
+
+        if(!goalState) {
+            this.goalState = new EightPuzzleState();
+            this.goalState.board = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+        }
     }
 
     expand(): EightPuzzleNode[] {
@@ -19,19 +24,18 @@ export class EightPuzzleNode extends Node<EightPuzzleState> {
                 newState.board = [...this.state.board];
                 newState.board[zeroIndex] = newState.board[actionIndex];
                 newState.board[actionIndex] = 0;
-                childNodes.push(new EightPuzzleNode(newState, this));
+                childNodes.push(new EightPuzzleNode(newState, this.goalState, this));
             }
         }
         return childNodes;
     }
 
-    isGoalState(goal: EightPuzzleState): boolean {
-        return this.state.equals(goal);
+    isGoalState(): boolean {
+        return this.state.equals(this.goalState);
     }
 
     printSolution() {
         for(let i = 0; i < this.solution.length; i++) {
-            const board = this.solution[i].board;
             process.stdout.write("_______" + "     ");
         }
         process.stdout.write("\n");
@@ -60,7 +64,6 @@ export class EightPuzzleNode extends Node<EightPuzzleState> {
         process.stdout.write("\n");
 
         for(let i = 0; i < this.solution.length; i++) {
-            const board = this.solution[i].board;
             process.stdout.write("-------" + "     ");
         }
         process.stdout.write("\n");

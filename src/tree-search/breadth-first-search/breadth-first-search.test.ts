@@ -57,16 +57,16 @@ describe('BreadthFirstSearch', () => {
 
 class MockNode extends Node<string> {
 
-    constructor(public state: string, public parent?: MockNode, public depth: number = 0) {
-        super(state, parent, depth);
+    constructor(public state: string, public goalState: string, public parent?: MockNode, public depth: number = 0) {
+        super(state, goalState, parent, depth);
     }
 
     expand(): MockNode[] {
-        return [new MockNode("A", this), new MockNode("B", this), new MockNode("C", this)];
+        return [new MockNode("A", this.goalState, this), new MockNode("B", this.goalState, this), new MockNode("C", this.goalState, this)];
     }
 
-    isGoalState(goal: string): boolean {
-        return goal === this.state;
+    isGoalState(): boolean {
+        return this.goalState === this.state;
     }
 
     printSolution(): void {
@@ -84,8 +84,8 @@ class MockProblem extends SearchProblem<string, MockNode> {
         super();
     }
 
-    createNode(state: string): MockNode {
-        return new MockNode(state);
+    createNode(state: string, goalState: string): MockNode {
+        return new MockNode(state, goalState);
     }
 
 }

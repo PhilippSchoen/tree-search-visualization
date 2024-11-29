@@ -1,6 +1,9 @@
-export abstract class SearchProblem<State, N> {
-    abstract initialState: State;
-    abstract goalState: State;
+import {Primitive} from "../tree-search/primitive";
+import {State} from "../tree-search/state";
 
-    abstract createNode(state: State): N;
+export abstract class SearchProblem<S extends Primitive | State, N> {
+    abstract initialState: S;
+    abstract goalState: S;
+
+    abstract createNode(state: S, goalState: S): N;
 }
