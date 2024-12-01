@@ -3,7 +3,7 @@ import {Node} from "../../tree-search/node";
 
 export class PathfindingNode extends Node<Position> {
 
-    constructor(public position: Position, public goalState: Position, public parent?: PathfindingNode, public cost: number = 0, public heuristic: number = 0) {
+    constructor(public position: Position, public goalState: Position, public parent?: PathfindingNode, public cost: number = 1, public heuristic: number = 0) {
         super(position, goalState, parent, cost, heuristic);
         this.heuristic = this.calculateHeuristic();
     }

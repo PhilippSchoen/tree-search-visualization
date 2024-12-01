@@ -4,10 +4,11 @@ export abstract class Node<State> {
     protected constructor(
         public state: State, public goalState: State,
         public parent?: Node<State>,
-        public cost: number = 0, public heuristic: number = 0)
+        public cost: number = 1, public heuristic: number = 0)
     {
         if(parent) {
             this.depth = parent.depth + 1;
+            this.cost += parent.cost;
         }
     }
 

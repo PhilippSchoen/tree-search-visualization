@@ -23,10 +23,31 @@ describe('Node', () => {
 
         expect(parent2.solution).toEqual([Location.Berlin, Location.Paris, Location.London]);
     });
+
+    test('cost is calculated correctly', () => {
+       let node = new MockNode(5, 500);
+       expect(node.cost).toBe(1);
+
+       node = new MockNode(5, 500, undefined, 5);
+       expect(node.cost).toBe(5);
+    });
+
+    test('cost is calculated correctly for child nodes', () => {
+        const node = new MockNode(5, 500);
+        const childNodes = node.expand();
+        expect(childNodes[0].cost).toBe(2);
+        expect(childNodes[0].parent.cost).toBe(1);
+        const deepChild = childNodes[0].expand()[0];
+        expect(deepChild.cost).toBe(3);
+
+        const expensiveNode = new MockNode(5, 500, undefined, 5);
+        const expensiveChildNodes = expensiveNode.expand();
+        expect(expensiveChildNodes[0].cost).toBe(6);
+    });
 });
 
 class MockNode extends Node<number> {
-    constructor(state: number, goalState: number, parent?: Node<number>, cost: number = 0) {
+    constructor(state: number, goalState: number, parent?: Node<number>, cost: number = 1) {
         super(state, goalState, parent, cost);
     }
 
