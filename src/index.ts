@@ -40,6 +40,7 @@ depthLimitedAgent.searchWithLogs(new LocationProblem(Location.Rome, Location.Bud
 console.log("Also, find a solution to my 8-Puzzle problem! \n");
 breadthFirstAgent.searchWithLogs(eightPuzzleProblem);
 depthLimitedAgent.searchWithLogs(eightPuzzleProblem);
+greedyBestFirstAgent.searchWithLogs(eightPuzzleProblem);
 
 console.log("Finally, find the best path from (10, 7) to (7, 10)! \n");
 depthLimitedAgent.searchWithLogs(pathfindingProblem);
@@ -49,3 +50,7 @@ greedyBestFirstAgent.searchWithLogs(pathfindingProblem);
 console.log("Now, a complex pathfinding problem for informed search algorithms! \n");
 const pathfindingProblem2 = new PathfindingProblem(new Position(-7, 25), new Position(122, -8));
 greedyBestFirstAgent.searchWithLogs(pathfindingProblem2);
+
+console.log("Let's try the informed search algorithms with an 8-Puzzle problem! \n");
+const initialState2 = new EightPuzzleState();
+greedyBestFirstAgent.searchWithLogs(new EightPuzzleProblem(initialState2, solutionState));

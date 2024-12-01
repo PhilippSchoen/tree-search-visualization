@@ -10,6 +10,8 @@ export class EightPuzzleNode extends Node<EightPuzzleState> {
             this.goalState = new EightPuzzleState();
             this.goalState.board = [1, 2, 3, 4, 5, 6, 7, 8, 0];
         }
+
+        this.heuristic = this.calculateHeuristic();
     }
 
     expand(): EightPuzzleNode[] {
@@ -68,6 +70,16 @@ export class EightPuzzleNode extends Node<EightPuzzleState> {
         }
         process.stdout.write("\n");
 
+    }
+
+    private calculateHeuristic(): number {
+        let heuristic = 0;
+        for(let i = 0; i < this.state.board.length; i++) {
+            if(this.state.board[i] !== this.goalState.board[i]) {
+                heuristic++;
+            }
+        }
+        return heuristic;
     }
 
 }

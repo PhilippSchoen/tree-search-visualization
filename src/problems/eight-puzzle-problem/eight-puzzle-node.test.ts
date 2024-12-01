@@ -87,6 +87,32 @@ describe('EightPuzzleNode', () => {
         childNode = childNodes.find(node => node.state.equals(resultingStates[2]));
         expect(childNode).toBeDefined();
     });
+
+    test('Heuristic should be calculated corretly', () => {
+        const state = new EightPuzzleState();
+        state.board = [1, 2, 3, 4, 5, 0, 6, 7, 8];
+        const node = new EightPuzzleNode(state);
+        expect(node.heuristic).toBe(4);
+
+        state.board = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+        const node2 = new EightPuzzleNode(state);
+        expect(node2.heuristic).toBe(0);
+
+        state.board = [2, 4, 5, 3, 0, 8, 6, 1, 7];
+        const node3 = new EightPuzzleNode(state);
+        expect(node3.heuristic).toBe(9);
+    });
+
+    test('Heuristic should be calculated correctly for child nodes', () => {
+       const state = new EightPuzzleState();
+       state.board = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+       const node = new EightPuzzleNode(state);
+       const childNodes = node.expand();
+       const child = childNodes[0];
+       expect(child.heuristic).toBe(2);
+       const child2 = childNodes[1];
+       expect(child2.heuristic).toBe(2);
+    });
 });
 
 function setupStates(boards: EightPuzzlePiece[][]): EightPuzzleState[] {
