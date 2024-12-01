@@ -9,12 +9,14 @@ import {EightPuzzleState} from "./problems/eight-puzzle-problem/eight-puzzle-sta
 import {EightPuzzleProblem} from "./problems/eight-puzzle-problem/eight-puzzle-problem";
 import {Position} from "./problems/pathfinding-problem/position";
 import {GreedyBestFirstSearch} from "./tree-search/greedy-best-first-search/greedy-best-first-search";
+import {AStarSearch} from "./tree-search/a-star-search/a-star-search";
 
 const breadthFirstAgent = new BreadthFirstSearch();
 const uniformCostAgent = new UniformCostSearch();
 const depthFirstAgent = new DepthFirstSearch();
 const depthLimitedAgent = new DepthLimitedSearch(10);
 const greedyBestFirstAgent = new GreedyBestFirstSearch();
+const aStarAgent = new AStarSearch();
 
 const pathfindingProblem = new PathfindingProblem(new Position(10, 7), new Position(7, 10));
 const solutionState = new EightPuzzleState();
@@ -50,7 +52,9 @@ greedyBestFirstAgent.searchWithLogs(pathfindingProblem);
 console.log("Now, a complex pathfinding problem for informed search algorithms! \n");
 const pathfindingProblem2 = new PathfindingProblem(new Position(-7, 25), new Position(122, -8));
 greedyBestFirstAgent.searchWithLogs(pathfindingProblem2);
+aStarAgent.searchWithLogs(pathfindingProblem2);
 
 console.log("Let's try the informed search algorithms with an 8-Puzzle problem! \n");
 const initialState2 = new EightPuzzleState();
 greedyBestFirstAgent.searchWithLogs(new EightPuzzleProblem(initialState2, solutionState));
+aStarAgent.searchWithLogs(new EightPuzzleProblem(initialState2, solutionState));
