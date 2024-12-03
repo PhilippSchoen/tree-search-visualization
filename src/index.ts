@@ -10,6 +10,7 @@ import {EightPuzzleProblem} from "./problems/eight-puzzle-problem/eight-puzzle-p
 import {Position} from "./problems/pathfinding-problem/position";
 import {GreedyBestFirstSearch} from "./tree-search/greedy-best-first-search/greedy-best-first-search";
 import {AStarSearch} from "./tree-search/a-star-search/a-star-search";
+import {BidirectionalSearch} from "./tree-search/bidirectional-search/bidirectional-search";
 
 const breadthFirstAgent = new BreadthFirstSearch();
 const uniformCostAgent = new UniformCostSearch();
@@ -17,6 +18,7 @@ const depthFirstAgent = new DepthFirstSearch();
 const depthLimitedAgent = new DepthLimitedSearch(10);
 const greedyBestFirstAgent = new GreedyBestFirstSearch();
 const aStarAgent = new AStarSearch();
+const bidirectionalAgent = new BidirectionalSearch();
 
 const pathfindingProblem = new PathfindingProblem(new Position(10, 7), new Position(7, 10));
 const solutionState = new EightPuzzleState();
@@ -31,6 +33,7 @@ breadthFirstAgent.searchWithLogs(new LocationProblem(Location.Berlin, Location.I
 uniformCostAgent.searchWithLogs(new LocationProblem(Location.Berlin, Location.Istanbul));
 depthFirstAgent.searchWithLogs(new LocationProblem(Location.Berlin, Location.Istanbul));
 depthLimitedAgent.searchWithLogs(new LocationProblem(Location.Berlin, Location.Istanbul));
+bidirectionalAgent.searchWithLogs(new LocationProblem(Location.Berlin, Location.Istanbul));
 
 console.log("Next, show me the path from Rome to Budapest! \n");
 
@@ -48,6 +51,7 @@ console.log("Finally, find the best path from (10, 7) to (7, 10)! \n");
 depthLimitedAgent.searchWithLogs(pathfindingProblem);
 breadthFirstAgent.searchWithLogs(pathfindingProblem);
 greedyBestFirstAgent.searchWithLogs(pathfindingProblem);
+bidirectionalAgent.searchWithLogs(pathfindingProblem);
 
 console.log("Now, a complex pathfinding problem for informed search algorithms! \n");
 const pathfindingProblem2 = new PathfindingProblem(new Position(-7, 25), new Position(122, -8));

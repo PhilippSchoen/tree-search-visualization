@@ -4,7 +4,6 @@ import {SearchProblem} from "../../problems/search-problem";
 import {Primitive} from "../primitive";
 import {State} from "../state";
 
-// TODO: Change cost system so it is additive with parent cost
 export class UniformCostSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
         const node = problem.createNode(problem.initialState, problem.goalState);

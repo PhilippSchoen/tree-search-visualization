@@ -7,7 +7,7 @@ export class LocationProblem extends SearchProblem<Location, LocationNode> {
         super();
     }
 
-    createNode(state: Location, goalState: Location): LocationNode {
-        return new LocationNode(state, goalState);
+    createNode(state: Location, goalState: Location, parent?: LocationNode): LocationNode {
+        return new LocationNode(state, goalState, parent);
     }
 }

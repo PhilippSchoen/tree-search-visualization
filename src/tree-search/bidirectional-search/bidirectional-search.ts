@@ -3,6 +3,7 @@ import {State} from "../state";
 import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
 import {SearchAgent} from "../search-agent";
+import * as _ from "lodash";
 
 export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
@@ -19,23 +20,20 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
         const goalExplored: S[] = [goalNode.state];
 
         while(startFrontier.length > 0 || goalFrontier.length > 0) {
-            this.expandFrontier(startFrontier, startExplored);
-            let collision = this.areFrontiersColliding(startFrontier, goalFrontier);
-            if(collision) {
-                // Assemble the path
-                let goalNode = collision[1];
-                let endOfPath = collision[0];
-                while(goalNode) {
-                    // Create new node with the same state as goalNode and set endOfPath as its parent
-                    // Set endOfPath to new node
-                    // Set goalNode to its parent
+            if(startFrontier.length > 0) {
+                this.expandFrontier(startFrontier, startExplored);
+                const collision = this.areFrontiersColliding(startFrontier, goalFrontier);
+                if(collision) {
+                    return this.assemblePath(collision, problem);
                 }
             }
 
-            this.expandFrontier(goalFrontier, goalExplored);
-            collision = this.areFrontiersColliding(startFrontier, goalFrontier);
-            if(collision) {
-                // Assemble the path
+            if(goalFrontier.length > 0) {
+                this.expandFrontier(goalFrontier, goalExplored);
+                const collision = this.areFrontiersColliding(startFrontier, goalFrontier);
+                if(collision) {
+                    return this.assemblePath(collision, problem);
+                }
             }
         }
     }
@@ -45,18 +43,23 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
         for(let child of node.expand()) {
             const state = child.state;
 
-            if(child.isGoalState()) {
-                return child as N;
-            }
-
             if(this.isPrimitiveValue(state)) {
                 if(!explored.includes(state)) {
+                    if(child.isGoalState()) {
+                        return child as N;
+                    }
+
                     frontier.push(child as N);
                     explored.push(state);
                 }
+
             }
             else {
                 if(!explored.some(s => (s as State).equals(state))) {
+                    if(child.isGoalState()) {
+                        return child as N;
+                    }
+
                     frontier.push(child as N);
                     explored.push(state);
                 }
@@ -69,6 +72,7 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
     private areFrontiersColliding(startFrontier: N[], goalFrontier: N[]): N[] | undefined {
         for(let startNode of startFrontier) {
             for(let goalNode of goalFrontier) {
+                // TODO: Only supports primitive states
                 if(startNode.state === goalNode.state) {
                     return [startNode, goalNode];
                 }
@@ -76,6 +80,17 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
         }
 
         return undefined;
+    }
+
+    private assemblePath(collision: N[], problem: P): N {
+        let goalNode = collision[1].parent;
+        let endOfPath = collision[0];
+        while(goalNode) {
+            const parent = _.cloneDeep(endOfPath);
+            endOfPath = problem.createNode(goalNode.state, problem.goalState, parent);
+            goalNode = goalNode.parent as N | undefined;
+        }
+        return endOfPath;
     }
 
 }

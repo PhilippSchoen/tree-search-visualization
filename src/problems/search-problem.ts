@@ -5,5 +5,5 @@ export abstract class SearchProblem<S extends Primitive | State, N> {
     abstract initialState: S;
     abstract goalState: S;
 
-    abstract createNode(state: S, goalState: S): N;
+    abstract createNode(state: S, goalState: S, parent?: N): N;
 }
