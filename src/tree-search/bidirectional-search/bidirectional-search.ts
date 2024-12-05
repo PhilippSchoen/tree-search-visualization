@@ -36,6 +36,7 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
                 }
             }
         }
+        return undefined;
     }
 
     private expandFrontier(frontier: N[], explored: S[]): N | undefined {

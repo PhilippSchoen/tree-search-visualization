@@ -59,7 +59,7 @@ describe('AStarSearch', () => {
 
 class MockNode extends Node<string> {
 
-    constructor(public state: string, public goalState: string, public parent?: MockNode, public cost: number = 1, public heuristic: number = 0) {
+    constructor(public override state: string, public override goalState: string, public override parent?: MockNode, public override cost: number = 1, public override heuristic: number = 0) {
         super(state, goalState, parent, cost, heuristic);
     }
 
@@ -77,7 +77,7 @@ class MockNode extends Node<string> {
     printSolution(): void {
     }
 
-    get solution(): string[] {
+    override get solution(): string[] {
         return [];
     }
 

@@ -3,7 +3,7 @@ import {Node} from "../../tree-search/node";
 
 export class EightPuzzleNode extends Node<EightPuzzleState> {
 
-    constructor(public state: EightPuzzleState, public goalState: EightPuzzleState = undefined, public parent?: EightPuzzleNode, public cost: number = 1) {
+    constructor(public override state: EightPuzzleState, public override goalState: EightPuzzleState = undefined, public override parent?: EightPuzzleNode, public override cost: number = 1) {
         super(state, goalState, parent, cost);
 
         if(!goalState) {

@@ -45,7 +45,7 @@ describe('DepthFirstSearch', () => {
 
 class MockNode extends Node<string> {
 
-    constructor(public state: string, public goalState: string, public parent?: MockNode, public depth: number = 0) {
+    constructor(public override state: string, public override goalState: string, public override parent?: MockNode, public override depth: number = 0) {
         super(state, goalState, parent, depth);
     }
 
@@ -60,7 +60,7 @@ class MockNode extends Node<string> {
     printSolution(): void {
     }
 
-    get solution(): string[] {
+    override get solution(): string[] {
         return [];
     }
 

@@ -59,7 +59,7 @@ class MockNode extends Node<number> {
         return this.goalState === this.state;
     }
 
-    get solution(): number[] {
+    override get solution(): number[] {
         return [this.state];
     }
 

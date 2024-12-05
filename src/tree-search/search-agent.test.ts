@@ -26,7 +26,7 @@ class MockSearch extends SearchAgent<number, MockNode> {
 
 class MockNode extends Node<number> {
 
-    constructor(public state: number, public goalState: number, public parent?: MockNode, public depth: number = 0) {
+    constructor(public override state: number, public override goalState: number, public override parent?: MockNode, public override depth: number = 0) {
         super(state, goalState, parent, depth);
     }
 
@@ -41,7 +41,7 @@ class MockNode extends Node<number> {
     printSolution(): void {
     }
 
-    get solution(): number[] {
+    override get solution(): number[] {
         return [];
     }
 
