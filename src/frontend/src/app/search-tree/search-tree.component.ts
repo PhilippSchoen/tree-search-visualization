@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, OnInit, ViewChild, ElementRef, Component} from '@angular/core';
 import {NgFor} from "@angular/common";
 import {DagreNodesOnlyLayout, NgxGraphModule} from "@swimlane/ngx-graph";
 import {GraphNode} from "./entities/graph-node";
@@ -13,6 +13,9 @@ import {PathfindingProblem} from "../../../../problems/pathfinding-problem/pathf
 import {Position} from "../../../../problems/pathfinding-problem/position";
 import {GraphCluster} from "./entities/graph-cluster";
 import {AStarSearch} from "../../../../tree-search/a-star-search/a-star-search";
+import {Tabs} from "flowbite";
+import {SearchAgent} from "../../../../tree-search/search-agent";
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -21,9 +24,53 @@ import {AStarSearch} from "../../../../tree-search/a-star-search/a-star-search";
   templateUrl: './search-tree.component.html',
   styleUrl: './search-tree.component.scss'
 })
-export class SearchTreeComponent {
+export class SearchTreeComponent implements AfterViewInit {
+  @ViewChild('treeTab', {static: false}) treeTab: ElementRef;
 
-  constructor() {
+  searchAlgorithms: string[] = [
+    'Breadth-First-Search', 'Depth-First-Search', 'Depth-Limited-Search', 'Uniform-Cost-Search', 'Bidirectional-Search', 'Greedy-Best-First-Search', 'A-Star-Search'
+  ];
+
+  agent: SearchAgent<any, any>;
+
+  ngAfterViewInit() {
+    const tabButtons = this.treeTab.nativeElement.querySelectorAll('button');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        this.handleTabChange(event);
+      });
+    });
+  }
+
+  handleTabChange(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const selectedTabId = target.getAttribute('aria-controls');
+    console.log('Tab changed:', selectedTabId);
+
+    switch(selectedTabId) {
+        case 'Breadth-First-Search':
+            this.agent = new BreadthFirstSearch();
+            break;
+        case 'A-Star-Search':
+            this.agent = new AStarSearch();
+            break;
+        default:
+    }
+
+    this.links = [];
+    this.nodes = [];
+
+    const problem = new PathfindingProblem(new Position(0, 0), new Position(1, 2));
+    let state = this.agent.startStepSearch(problem);
+    this.generateTreeData(state);
+    while(!state.solution) {
+      state = this.agent.searchStep();
+      this.generateTreeData(state);
+    }
+  }
+
+  constructor(private cdr: ChangeDetectorRef) {
     const problem = new PathfindingProblem(new Position(0, 0), new Position(20, 25));
     const searchAgent = new AStarSearch();
     let state = searchAgent.startStepSearch(problem);
@@ -38,9 +85,7 @@ export class SearchTreeComponent {
     // this.generateTreeData(state);
   }
 
-  searchAlgorithms: string[] = [
-      'Breadth-First-Search', 'Depth-First-Search', 'Depth-Limited-Search', 'Uniform-Cost-Search', 'Bidirectional-Search', 'Greedy-Best-First-Search', 'A-Star-Search'
-  ];
+
 
   nodes: GraphNode[] = [];
   links: GraphLink[] = [];

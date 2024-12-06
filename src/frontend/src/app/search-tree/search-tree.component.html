@@ -1,6 +1,6 @@
 
 
-<div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+<div #treeTab class="mb-4 border-b border-gray-200 dark:border-gray-700">
   <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tree-tab" data-tabs-toggle="#tree-tab-content" role="tablist">
     <li *ngFor="let search of searchAlgorithms" class="me-2" role="presentation">
       <button
@@ -23,8 +23,8 @@
               class="chart-container"
               layout="dagre"
               [view]="[500, 500]"
-              [links]="links"
-              [nodes]="nodes"
+              [links]="this.links"
+              [nodes]="this.nodes"
               (select)="onNodeSelect($event)"
       >
       </ngx-graph>
