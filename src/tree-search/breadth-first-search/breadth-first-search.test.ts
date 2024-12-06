@@ -53,6 +53,45 @@ describe('BreadthFirstSearch', () => {
         expect(node).toBeUndefined();
     });
 
+    test('Search should work with step search', () => {
+       const agent = new BreadthFirstSearch();
+       let state = agent.startStepSearch(new LocationProblem(Location.Berlin, Location.Istanbul));
+       expect(state.frontier.length).toBe(1);
+       expect(state.explored.length).toBe(1);
+       expect(state.solution).toBeUndefined();
+       while(!state.solution) {
+           state = agent.searchStep();
+       }
+       expect(state.frontier.length).toBe(0);
+       expect(state.explored.length).toBe(7);
+       expect(state.solution.state).toEqual(Location.Istanbul);
+    });
+
+    test('Step search should work with different search problems', () => {
+        const agent = new BreadthFirstSearch();
+        let state = agent.startStepSearch(new MockProblem("A", "Z"));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.frontier.length).toBe(0);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution.state).toEqual("A");
+
+        state = agent.startStepSearch(new LocationProblem(Location.Berlin, Location.Istanbul));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.frontier.length).toBe(0);
+        expect(state.explored.length).toBe(7);
+        expect(state.solution.state).toEqual(Location.Istanbul);
+    });
+
 });
 
 class MockNode extends Node<string> {

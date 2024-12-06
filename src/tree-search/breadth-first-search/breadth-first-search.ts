@@ -3,8 +3,14 @@ import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
 import {Primitive} from "../primitive";
 import {State} from "../state";
+import {SearchState} from "../search-state";
 
 export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
+
+
+    frontier: N[] = [];
+    explored: S[] = [];
+
     search(problem: P): N {
         const node = problem.createNode(problem.initialState, problem.goalState);
         if(node.isGoalState()) {
@@ -43,6 +49,46 @@ export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, 
         }
 
         return undefined;
+    }
+
+    searchStep(): SearchState<S> {
+        const currentNode = this.frontier.shift();
+        for(let child of currentNode.expand()) {
+            const state = child.state;
+            if(child.isGoalState()) {
+                return new SearchState(this.frontier, this.explored, child as N);
+            }
+            if(this.isPrimitiveValue(state)) {
+                if(!this.explored.includes(state)) {
+                    this.frontier.push(child as N);
+                    this.explored.push(state);
+                }
+            }
+            else {
+                if(!this.explored.some(s => (s as State).equals(state))) {
+                    this.frontier.push(child as N);
+                    this.explored.push(state);
+                }
+            }
+
+            if(!this.explored.includes(state)) {
+                this.frontier.push(child as N);
+                this.explored.push(state);
+            }
+        }
+        return new SearchState(this.frontier, this.explored);
+    }
+
+    startStepSearch(problem: P): SearchState<S> {
+        const node = problem.createNode(problem.initialState, problem.goalState);
+        this.frontier = [node];
+        this.explored = [node.state];
+
+        if(node.isGoalState()) {
+            return new SearchState(this.frontier, this.explored, node);
+        }
+
+        return new SearchState(this.frontier, this.explored);
     }
 
 }

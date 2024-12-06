@@ -3,6 +3,7 @@ import {Primitive} from "../primitive";
 import {State} from "../state";
 import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
+import {SearchState} from "../search-state";
 
 export class GreedyBestFirstSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
@@ -37,6 +38,16 @@ export class GreedyBestFirstSearch<S extends Primitive | State, N extends Node<S
             }
         }
 
+        return undefined;
+    }
+
+    // TODO: Add step search
+
+    searchStep(): SearchState<S> {
+        return undefined;
+    }
+
+    startStepSearch(problem: P): SearchState<any> {
         return undefined;
     }
     

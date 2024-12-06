@@ -3,6 +3,7 @@ import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
 import {State} from "../state";
 import {Primitive} from "../primitive";
+import {SearchState} from "../search-state";
 
 export class DepthFirstSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
@@ -34,6 +35,15 @@ export class DepthFirstSearch<S extends Primitive | State, N extends Node<S>, P 
             }
         }
 
+        return undefined;
+    }
+
+    // TODO: Add step search
+    searchStep(): SearchState<S> {
+        return undefined;
+    }
+
+    startStepSearch(problem: P): SearchState<S> {
         return undefined;
     }
 

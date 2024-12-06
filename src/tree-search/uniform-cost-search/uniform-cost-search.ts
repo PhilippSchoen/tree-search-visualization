@@ -3,6 +3,7 @@ import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
 import {Primitive} from "../primitive";
 import {State} from "../state";
+import {SearchState} from "../search-state";
 
 export class UniformCostSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
@@ -38,6 +39,16 @@ export class UniformCostSearch<S extends Primitive | State, N extends Node<S>, P
             }
         }
 
+        return undefined;
+    }
+
+    // TODO: Add step search
+
+    searchStep(): SearchState<any> {
+        return undefined;
+    }
+
+    startStepSearch(problem: P): SearchState<any> {
         return undefined;
     }
 

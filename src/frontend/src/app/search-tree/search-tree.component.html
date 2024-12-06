@@ -18,6 +18,16 @@
     <p class="text-sm text-gray-500 dark:text-gray-400">
       This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">{{ search }} tab's associated content</strong>.
       Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.
+
+      <ngx-graph
+              class="chart-container"
+              layout="dagre"
+              [view]="[500, 500]"
+              [links]="links"
+              [nodes]="nodes"
+              (select)="onNodeSelect($event)"
+      >
+      </ngx-graph>
     </p>
   </div>
 </div>

@@ -2,6 +2,7 @@ import {SearchAgent} from "./search-agent";
 import {LocationNode} from "../problems/location-problem/location-node";
 import {Location} from "../problems/location-problem/location";
 import {Node} from "./node";
+import {SearchState} from "./search-state";
 
 describe('SearchAgent', () => {
     test('searchWithLogs should find the same solution as search', () => {
@@ -21,6 +22,14 @@ describe('SearchAgent', () => {
 class MockSearch extends SearchAgent<number, MockNode> {
     search(problem: number): MockNode {
         return new MockNode(5, 10);
+    }
+
+    searchStep(): SearchState<number> {
+        return undefined;
+    }
+
+    startStepSearch(problem: number): SearchState<number> {
+        return undefined;
     }
 }
 

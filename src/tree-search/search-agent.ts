@@ -1,8 +1,14 @@
 import {Node} from "./node";
 import {Primitive} from "./primitive";
+import {SearchState} from "./search-state";
 
 export abstract class SearchAgent<SearchProblem, N extends Node<unknown>> {
+
     abstract search(problem: SearchProblem): N;
+
+    abstract startStepSearch(problem: SearchProblem): SearchState<any>;
+
+    abstract searchStep(): SearchState<any>;
 
     searchWithLogs(problem: SearchProblem): N {
         let startMemory = process.memoryUsage().heapUsed;

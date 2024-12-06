@@ -4,6 +4,7 @@ import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
 import {SearchAgent} from "../search-agent";
 import * as _ from "lodash";
+import {SearchState} from "../search-state";
 
 export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
     search(problem: P): N {
@@ -92,6 +93,15 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
             goalNode = goalNode.parent as N | undefined;
         }
         return endOfPath;
+    }
+
+    // TODO: Add step search
+    searchStep(): SearchState<S> {
+        return undefined;
+    }
+
+    startStepSearch(problem: P): SearchState<S> {
+        return undefined;
     }
 
 }

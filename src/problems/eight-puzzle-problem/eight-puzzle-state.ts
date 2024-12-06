@@ -24,6 +24,14 @@ export class EightPuzzleState implements State {
         return matches === state?.board.length;
     }
 
+    toString(): string {
+        let str = "";
+        for(let i = 0; i < this.board.length; i++) {
+            str += this.board[i];
+        }
+        return str;
+    }
+
     private isSolvable(): boolean {
         let inversionCount = 0;
 
