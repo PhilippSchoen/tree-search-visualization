@@ -1,21 +1,17 @@
-import {AfterViewInit, OnInit, ViewChild, ElementRef, Component} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
 import {NgFor} from "@angular/common";
 import {DagreNodesOnlyLayout, NgxGraphModule} from "@swimlane/ngx-graph";
 import {GraphNode} from "./entities/graph-node";
 import {GraphLink} from "./entities/graph-link";
 import {SearchState} from "../../../../tree-search/search-state";
-import {LocationNode} from "../../../../problems/location-problem/location-node";
-import {Location} from "../../../../problems/location-problem/location";
-import {GraphTree} from "./entities/graph-tree";
-import {LocationProblem} from "../../../../problems/location-problem/location-problem";
 import {BreadthFirstSearch} from "../../../../tree-search/breadth-first-search/breadth-first-search";
 import {PathfindingProblem} from "../../../../problems/pathfinding-problem/pathfinding-problem";
 import {Position} from "../../../../problems/pathfinding-problem/position";
 import {GraphCluster} from "./entities/graph-cluster";
 import {AStarSearch} from "../../../../tree-search/a-star-search/a-star-search";
-import {Tabs} from "flowbite";
 import {SearchAgent} from "../../../../tree-search/search-agent";
-import { ChangeDetectorRef } from '@angular/core';
+import {UniformCostSearch} from "../../../../tree-search/uniform-cost-search/uniform-cost-search";
+import {GreedyBestFirstSearch} from "../../../../tree-search/greedy-best-first-search/greedy-best-first-search";
 
 
 @Component({
@@ -55,13 +51,19 @@ export class SearchTreeComponent implements AfterViewInit {
         case 'A-Star-Search':
             this.agent = new AStarSearch();
             break;
+        case 'Uniform-Cost-Search':
+            this.agent = new UniformCostSearch();
+            break;
+        case 'Greedy-Best-First-Search':
+            this.agent = new GreedyBestFirstSearch();
+            break;
         default:
     }
 
     this.links = [];
     this.nodes = [];
 
-    const problem = new PathfindingProblem(new Position(0, 0), new Position(1, 2));
+    const problem = new PathfindingProblem(new Position(0, 0), new Position(3, 3));
     let state = this.agent.startStepSearch(problem);
     this.generateTreeData(state);
     while(!state.solution) {

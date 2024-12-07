@@ -62,9 +62,9 @@ describe('BreadthFirstSearch', () => {
        while(!state.solution) {
            state = agent.searchStep();
        }
-       expect(state.frontier.length).toBe(0);
        expect(state.explored.length).toBe(7);
        expect(state.solution.state).toEqual(Location.Istanbul);
+       expect(state.solution.depth).toBe(4);
     });
 
     test('Step search should work with different search problems', () => {
@@ -79,6 +79,7 @@ describe('BreadthFirstSearch', () => {
         expect(state.frontier.length).toBe(0);
         expect(state.explored.length).toBe(1);
         expect(state.solution.state).toEqual("A");
+        expect(state.solution.depth).toBe(1);
 
         state = agent.startStepSearch(new LocationProblem(Location.Berlin, Location.Istanbul));
         expect(state.frontier.length).toBe(1);
@@ -90,14 +91,15 @@ describe('BreadthFirstSearch', () => {
         expect(state.frontier.length).toBe(0);
         expect(state.explored.length).toBe(7);
         expect(state.solution.state).toEqual(Location.Istanbul);
+        expect(state.solution.depth).toBe(4);
     });
 
 });
 
 class MockNode extends Node<string> {
 
-    constructor(public override state: string, public override goalState: string, public override parent?: MockNode, public override depth: number = 0) {
-        super(state, goalState, parent, depth);
+    constructor(public override state: string, public override goalState: string, public override parent?: MockNode) {
+        super(state, goalState, parent);
     }
 
     expand(): MockNode[] {

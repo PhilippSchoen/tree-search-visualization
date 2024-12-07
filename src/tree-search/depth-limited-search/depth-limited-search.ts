@@ -11,6 +11,9 @@ export class DepthLimitedSearch<S extends Primitive | State, N extends Node<S>, 
         super();
     }
 
+    frontier: N[] = [];
+    explored: S[] = [];
+
     search(problem: P): N {
         const explored: S[] = [];
         const frontier: N[] = [];
@@ -43,12 +46,32 @@ export class DepthLimitedSearch<S extends Primitive | State, N extends Node<S>, 
         return undefined;
     }
 
-    // TODO: Add step search
     searchStep(): SearchState<S> {
-        return undefined;
+        const node = this.frontier.pop();
+        if(node.isGoalState()) {
+            return new SearchState<S>(this.frontier, this.explored, node as N);
+        }
+        for(const child of node.expand()) {
+            const state = child.state;
+            if(this.isPrimitiveValue(state)) {
+                if(!this.explored.includes(state) && (child.depth <= this.limit)) {
+                    this.frontier.push(child as N);
+                    this.explored.push(state);
+                }
+            }
+            else {
+                if(!this.explored.some(s => (s as State).equals(state)) && (child.depth <= this.limit)) {
+                    this.frontier.push(child as N);
+                    this.explored.push(state);
+                }
+            }
+        }
+        return new SearchState<S>(this.frontier, this.explored);
     }
 
     startStepSearch(problem: P): SearchState<S> {
-        return undefined;
+        this.frontier.push(problem.createNode(problem.initialState, problem.goalState));
+        this.explored.push(problem.initialState);
+        return new SearchState(this.frontier, this.explored);
     }
 }

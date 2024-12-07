@@ -3,6 +3,7 @@ import {Location} from "../../problems/location-problem/location";
 import {GreedyBestFirstSearch} from "./greedy-best-first-search";
 import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
+import {AStarSearch} from "../a-star-search/a-star-search";
 
 describe('GreedyBestFirstSearch', () => {
     test('Search should find a path from Berlin to Istanbul', () => {
@@ -44,6 +45,46 @@ describe('GreedyBestFirstSearch', () => {
         expect(node.state).toEqual("A");
         expect(node.parent.state).toEqual("B");
         expect(node.parent.parent.state).toEqual("Z");
+    });
+
+    test('Search should work with step search', () => {
+        const agent = new GreedyBestFirstSearch();
+        let state = agent.startStepSearch(new LocationProblem(Location.Berlin, Location.Istanbul));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.explored.length).toBe(7);
+        expect(state.solution.state).toEqual(Location.Istanbul);
+        expect(state.solution.depth).toBe(4);
+    });
+
+    test('Step search should work with different search problems', () => {
+        const agent = new GreedyBestFirstSearch();
+        let state = agent.startStepSearch(new MockProblem("A", "Z"));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(3);
+        expect(state.solution.state).toEqual("A");
+        expect(state.solution.depth).toBe(2);
+
+        state = agent.startStepSearch(new LocationProblem(Location.Berlin, Location.Istanbul));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.explored.length).toBe(7);
+        expect(state.solution.state).toEqual(Location.Istanbul);
+        expect(state.solution.depth).toBe(4);
     });
 });
 
