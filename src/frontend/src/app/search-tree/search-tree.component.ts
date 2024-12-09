@@ -1,4 +1,13 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {NgFor} from "@angular/common";
 import {DagreNodesOnlyLayout, NgxGraphModule} from "@swimlane/ngx-graph";
 import {GraphNode} from "./entities/graph-node";
@@ -25,6 +34,9 @@ import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/
 })
 export class SearchTreeComponent implements AfterViewInit {
   @ViewChild('treeTab', {static: false}) treeTab: ElementRef;
+  @Input() selectedAlgorithm!: string;
+  @Input() selectedProblem!: string;
+  @Output() algorithmChange = new EventEmitter<string>();
 
   searchAlgorithms: string[] = [
     'Breadth-First-Search', 'Depth-First-Search', 'Depth-Limited-Search', 'Uniform-Cost-Search', 'Bidirectional-Search', 'Greedy-Best-First-Search', 'A-Star-Search'
@@ -71,6 +83,8 @@ export class SearchTreeComponent implements AfterViewInit {
             break;
         default:
     }
+
+    this.algorithmChange.emit(selectedTabId);
 
     this.links = [];
     this.nodes = [];

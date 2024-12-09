@@ -1,7 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {AStarSearch} from '../../../tree-search/a-star-search/a-star-search';
-import {PathfindingProblem} from '../../../problems/pathfinding-problem/pathfinding-problem';
-import {Position} from '../../../problems/pathfinding-problem/position';
 import {SearchProblemComponent} from './search-problem/search-problem.component';
 import {SearchTreeComponent} from './search-tree/search-tree.component';
 
@@ -12,10 +9,18 @@ import {SearchTreeComponent} from './search-tree/search-tree.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
+
+  selectedProblem: string;
+  selectedAlgorithm: string;
+
   ngOnInit() {
-    const aStarSearch = new AStarSearch();
-    const problem = new PathfindingProblem(new Position(0, 0), new Position(3, 3));
-    const solution = aStarSearch.search(problem);
-    solution.printSolution();
+  }
+
+  onAlgorithmChange(newAlgorithm: string) {
+    this.selectedAlgorithm = newAlgorithm;
+  }
+
+  onProblemChange(newProblem: string) {
+    this.selectedProblem = newProblem;
   }
 }
