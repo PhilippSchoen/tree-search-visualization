@@ -12,6 +12,9 @@ import {AStarSearch} from "../../../../tree-search/a-star-search/a-star-search";
 import {SearchAgent} from "../../../../tree-search/search-agent";
 import {UniformCostSearch} from "../../../../tree-search/uniform-cost-search/uniform-cost-search";
 import {GreedyBestFirstSearch} from "../../../../tree-search/greedy-best-first-search/greedy-best-first-search";
+import {DepthLimitedSearch} from '../../../../tree-search/depth-limited-search/depth-limited-search';
+import {DepthFirstSearch} from '../../../../tree-search/depth-first-search/depth-first-search';
+import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/bidirectional-search';
 
 
 @Component({
@@ -57,6 +60,15 @@ export class SearchTreeComponent implements AfterViewInit {
         case 'Greedy-Best-First-Search':
             this.agent = new GreedyBestFirstSearch();
             break;
+        case 'Depth-Limited-Search':
+            this.agent = new DepthLimitedSearch(10);
+            break;
+        case 'Depth-First-Search':
+            this.agent = new DepthFirstSearch();
+            break;
+        case 'Bidirectional-Search':
+            this.agent = new BidirectionalSearch();
+            break;
         default:
     }
 
@@ -73,7 +85,7 @@ export class SearchTreeComponent implements AfterViewInit {
   }
 
   constructor(private cdr: ChangeDetectorRef) {
-    const problem = new PathfindingProblem(new Position(0, 0), new Position(20, 25));
+    const problem = new PathfindingProblem(new Position(0, 0), new Position(3, 3));
     const searchAgent = new AStarSearch();
     let state = searchAgent.startStepSearch(problem);
     this.generateTreeData(state);
@@ -81,12 +93,8 @@ export class SearchTreeComponent implements AfterViewInit {
         state = searchAgent.searchStep();
         this.generateTreeData(state);
     }
-    // state = searchAgent.searchStep();
-    // // const parent = new LocationNode(Location.Berlin, Location.Istanbul);
-    // // const searchState = new SearchState([parent, new LocationNode(Location.London, Location.Istanbul, parent)], []);
-    // this.generateTreeData(state);
-  }
 
+  }
 
 
   nodes: GraphNode[] = [];
@@ -95,7 +103,7 @@ export class SearchTreeComponent implements AfterViewInit {
   layout = new DagreNodesOnlyLayout();
 
   onNodeSelect($event: any) {
-    
+
   }
 
   generateTreeData(searchState: SearchState<any>) {

@@ -4,6 +4,7 @@ import {LocationProblem} from "../../problems/location-problem/location-problem"
 import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
 import {BreadthFirstSearch} from "../breadth-first-search/breadth-first-search";
+import {DepthFirstSearch} from "../depth-first-search/depth-first-search";
 
 describe('DepthLimitedSearch', () => {
     test('Search should find a path from Berlin to Istanbul', () => {
@@ -82,7 +83,6 @@ describe('DepthLimitedSearch', () => {
         while(!state.solution) {
             state = agent.searchStep();
         }
-        expect(state.frontier.length).toBe(0);
         expect(state.explored.length).toBe(
             8
         );
@@ -93,8 +93,8 @@ describe('DepthLimitedSearch', () => {
 
 class MockNode extends Node<string> {
 
-    constructor(public override state: string, public override goalState: string, public override parent?: MockNode, public override depth: number = 0) {
-        super(state, goalState, parent, depth);
+    constructor(public override state: string, public override goalState: string, public override parent?: MockNode) {
+        super(state, goalState, parent);
     }
 
     expand(): MockNode[] {

@@ -70,8 +70,11 @@ export class DepthLimitedSearch<S extends Primitive | State, N extends Node<S>, 
     }
 
     startStepSearch(problem: P): SearchState<S> {
-        this.frontier.push(problem.createNode(problem.initialState, problem.goalState));
-        this.explored.push(problem.initialState);
+        const node = problem.createNode(problem.initialState, problem.goalState);
+        const state = problem.initialState;
+        this.frontier = [node];
+        this.explored = [state];
+
         return new SearchState(this.frontier, this.explored);
     }
 }

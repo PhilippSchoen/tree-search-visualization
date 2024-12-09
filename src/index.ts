@@ -51,7 +51,7 @@ console.log("Finally, find the best path from (10, 7) to (7, 10)! \n");
 depthLimitedAgent.searchWithLogs(pathfindingProblem);
 breadthFirstAgent.searchWithLogs(pathfindingProblem);
 greedyBestFirstAgent.searchWithLogs(pathfindingProblem);
-bidirectionalAgent.searchWithLogs(pathfindingProblem);
+// bidirectionalAgent.searchWithLogs(pathfindingProblem);
 
 console.log("Now, a complex pathfinding problem for informed search algorithms! \n");
 const pathfindingProblem2 = new PathfindingProblem(new Position(-7, 25), new Position(122, -8));

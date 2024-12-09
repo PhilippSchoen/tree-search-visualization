@@ -41,12 +41,54 @@ describe('DepthFirstSearch', () => {
         expect(node).toBeUndefined();
     });
 
+    test('Search should work with step search', () => {
+        const agent = new DepthFirstSearch();
+        let state = agent.startStepSearch(new LocationProblem(Location.Berlin, Location.Istanbul));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.explored.length).toBe(8);
+        expect(state.solution.state).toEqual(Location.Istanbul);
+        expect(state.solution.depth).toBe(4);
+    });
+
+    test('Step search should work with different search problems', () => {
+        const agent = new DepthFirstSearch();
+        let state = agent.startStepSearch(new MockProblem("A", "Z"));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.frontier.length).toBe(0);
+        expect(state.explored.length).toBe(4);
+        expect(state.solution.state).toEqual("A");
+        expect(state.solution.depth).toBe(1);
+
+        state = agent.startStepSearch(new LocationProblem(Location.Berlin, Location.Istanbul));
+        expect(state.frontier.length).toBe(1);
+        expect(state.explored.length).toBe(1);
+        expect(state.solution).toBeUndefined();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(state.explored.length).toBe(
+            8
+        );
+        expect(state.solution.state).toEqual(Location.Istanbul);
+        expect(state.solution.depth).toBe(4);
+    });
+
 });
 
 class MockNode extends Node<string> {
 
-    constructor(public override state: string, public override goalState: string, public override parent?: MockNode, public override depth: number = 0) {
-        super(state, goalState, parent, depth);
+    constructor(public override state: string, public override goalState: string, public override parent?: MockNode) {
+        super(state, goalState, parent);
     }
 
     expand(): MockNode[] {

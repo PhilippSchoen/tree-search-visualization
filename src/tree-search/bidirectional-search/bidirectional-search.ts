@@ -7,6 +7,14 @@ import * as _ from "lodash";
 import {SearchState} from "../search-state";
 
 export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
+
+    startFrontier: N[] = [];
+    startExplored: S[] = [];
+    goalFrontier: N[] = [];
+    goalExplored: S[] = [];
+
+    problem: P;
+
     search(problem: P): N {
         const startNode = problem.createNode(problem.initialState, problem.goalState);
         const goalNode = problem.createNode(problem.goalState, problem.initialState);
@@ -95,13 +103,47 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
         return endOfPath;
     }
 
-    // TODO: Add step search
     searchStep(): SearchState<S> {
-        return undefined;
+        if(this.startFrontier.length > 0) {
+            this.expandFrontier(this.startFrontier, this.startExplored);
+            const frontier = this.startFrontier.concat(this.goalFrontier);
+            const explored = this.startExplored.concat(this.goalExplored);
+            const collision = this.areFrontiersColliding(this.startFrontier, this.goalFrontier);
+            if(collision) {
+                return new SearchState<S>(frontier, explored, this.assemblePath(collision, this.problem));
+            }
+        }
+
+        if(this.goalFrontier.length > 0) {
+            this.expandFrontier(this.goalFrontier, this.goalExplored);
+            const frontier = this.startFrontier.concat(this.goalFrontier);
+            const explored = this.startExplored.concat(this.goalExplored);
+            const collision = this.areFrontiersColliding(this.startFrontier, this.goalFrontier);
+            if(collision) {
+                return new SearchState<S>(frontier, explored, this.assemblePath(collision, this.problem));
+            }
+        }
+
+        const frontier = this.startFrontier.concat(this.goalFrontier);
+        const explored = this.startExplored.concat(this.goalExplored);
+        return new SearchState<S>(frontier, explored);
     }
 
     startStepSearch(problem: P): SearchState<S> {
-        return undefined;
+        const startNode = problem.createNode(problem.initialState, problem.goalState);
+        const goalNode = problem.createNode(problem.goalState, problem.initialState);
+        this.startExplored = [startNode.state];
+        this.startFrontier = [startNode];
+        this.goalExplored = [goalNode.state];
+        this.goalFrontier = [goalNode];
+        this.problem = problem;
+
+        const frontier = this.startFrontier.concat(this.goalFrontier);
+        const explored = this.startExplored.concat(this.goalExplored);
+        if(startNode.isGoalState()) {
+            return new SearchState<S>(frontier, explored, startNode);
+        }
+        return new SearchState<S>(frontier, explored);
     }
 
 }
