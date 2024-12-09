@@ -106,6 +106,23 @@ export class SearchTreeComponent implements AfterViewInit {
 
   }
 
+  setColor(node: { label: string }) {
+    if(this.solutionNodes.includes(node.label)) {
+      return '#FF0000';
+    }
+    if(this.frontierNodes.includes(node.label)) {
+      return '#0000FF';
+    }
+    if(this.exploredNodes.includes(node.label)) {
+      return '#00FF00';
+    }
+    return '#FFFFFF';
+  }
+
+  exploredNodes: string[] = [];
+  frontierNodes: string[] = [];
+  solutionNodes: string[] = [];
+
   generateTreeData(searchState: SearchState<any>) {
 
     // const tree = new GraphTree();
@@ -113,10 +130,29 @@ export class SearchTreeComponent implements AfterViewInit {
     // this.links = tree.links;
     const clusters: GraphCluster[] = [];
 
+    this.frontierNodes.forEach(node => {
+      if(!searchState.frontier.find(n => n.state.toString() === node)) {
+        this.frontierNodes = this.frontierNodes.filter(n => n !== node);
+        this.exploredNodes.push(node);
+      }
+    });
+
+    if(searchState.solution) {
+      let solution = searchState.solution;
+      this.solutionNodes = [];
+      while(solution) {
+        this.solutionNodes.push(solution.state.toString());
+        solution = solution.parent;
+      }
+    }
+
     // For every node in the frontier: Add to the graph, use parent for link
     for(const node of searchState?.frontier) {
 
       if (this.nodes.find(graphNode => graphNode.id === node.state.toString()) === undefined) {
+
+        this.frontierNodes.push(node.state.toString());
+
         const graphNode: GraphNode = {
           id: node.state.toString(),
           label: node.state.toString()

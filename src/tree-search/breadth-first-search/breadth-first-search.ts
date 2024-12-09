@@ -55,9 +55,6 @@ export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, 
         const currentNode = this.frontier.shift();
         for(let child of currentNode.expand()) {
             const state = child.state;
-            if(child.isGoalState()) {
-                return new SearchState(this.frontier, this.explored, child as N);
-            }
             if(this.isPrimitiveValue(state)) {
                 if(!this.explored.includes(state)) {
                     this.frontier.push(child as N);
@@ -70,10 +67,9 @@ export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, 
                     this.explored.push(state);
                 }
             }
-
-            if(!this.explored.includes(state)) {
-                this.frontier.push(child as N);
-                this.explored.push(state);
+            
+            if(child.isGoalState()) {
+                return new SearchState(this.frontier, this.explored, child as N);
             }
         }
         return new SearchState(this.frontier, this.explored);

@@ -13,21 +13,44 @@
   </ul>
 </div>
 <div id="tree-tab-content">
-  <div *ngFor="let search of searchAlgorithms" class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
+  <button disabled type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Frontier</button>
+  <button disabled type="button" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Explored</button>
+  <button disabled type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Solution</button>
+  <div *ngFor="let search of searchAlgorithms" class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800 h-[90vh]"
        id="{{ search }}" role="tabpanel" [attr.aria-labelledby]="search + '-tab'">
-    <p class="text-sm text-gray-500 dark:text-gray-400">
-      This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">{{ search }} tab's associated content</strong>.
-      Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.
 
+    <div class="text-sm text-gray-500 dark:text-gray-400 h-full relative">
       <ngx-graph
-              class="chart-container"
+              class="chart-container w-full h-full"
               layout="dagre"
-              [view]="[1000, 1000]"
               [links]="this.links"
               [nodes]="this.nodes"
               (select)="onNodeSelect($event)"
       >
+<!--        <ng-template #defsTemplate>-->
+<!--          <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">-->
+<!--            <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />-->
+<!--          </svg:marker>-->
+<!--        </ng-template>-->
+
+
+        <ng-template #nodeTemplate let-node>
+          <svg:g
+            class="node"
+          >
+            <svg:rect
+              [attr.width]="node.dimension.width"
+              [attr.height]="node.dimension.height"
+              [attr.fill]="setColor(node)"
+            />
+            <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
+              {{node.label}}
+            </svg:text>
+          </svg:g>
+        </ng-template>
+
       </ngx-graph>
-    </p>
+
+    </div>
   </div>
 </div>
