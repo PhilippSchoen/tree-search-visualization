@@ -4,6 +4,8 @@ import {Node} from "../node";
 import {SearchProblem} from "../../problems/search-problem";
 import {BidirectionalSearch} from "./bidirectional-search";
 import {DepthLimitedSearch} from "../depth-limited-search/depth-limited-search";
+import {PathfindingProblem} from "../../problems/pathfinding-problem/pathfinding-problem";
+import {Position} from "../../problems/pathfinding-problem/position";
 
 describe('BidirectionalSearch', () => {
     test('Search should find a path from Berlin to Istanbul', () => {
@@ -59,6 +61,13 @@ describe('BidirectionalSearch', () => {
         expect(state.explored.length).toBe(9);
         expect(state.solution.state).toEqual(Location.Istanbul);
         expect(state.solution.depth).toBe(4);
+    });
+
+    test('Search should work for an object problem', () => {
+        const agent = new BidirectionalSearch();
+        const problem = new PathfindingProblem(new Position(0, 0), new Position(2, -2));
+        const node = agent.search(problem);
+        expect(node.state).toEqual(new Position(2, -2));
     });
 
     test('Step search should work with different search problems', () => {

@@ -55,23 +55,24 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
 
             if(this.isPrimitiveValue(state)) {
                 if(!explored.includes(state)) {
-                    if(child.isGoalState()) {
-                        return child as N;
-                    }
-
                     frontier.push(child as N);
                     explored.push(state);
+
+                    if(child.isGoalState()) {
+                        return child as N;
+
+                    }
                 }
 
             }
             else {
                 if(!explored.some(s => (s as State).equals(state))) {
+                    frontier.push(child as N);
+                    explored.push(state);
+
                     if(child.isGoalState()) {
                         return child as N;
                     }
-
-                    frontier.push(child as N);
-                    explored.push(state);
                 }
             }
         }
@@ -82,9 +83,15 @@ export class BidirectionalSearch<S extends Primitive | State, N extends Node<S>,
     private areFrontiersColliding(startFrontier: N[], goalFrontier: N[]): N[] | undefined {
         for(let startNode of startFrontier) {
             for(let goalNode of goalFrontier) {
-                // TODO: Only supports primitive states
-                if(startNode.state === goalNode.state) {
-                    return [startNode, goalNode];
+                if(this.isPrimitiveValue(startNode.state) && this.isPrimitiveValue(goalNode.state)) {
+                    if(startNode.state === goalNode.state) {
+                        return [startNode, goalNode];
+                    }
+                }
+                else {
+                    if((startNode.state as State).equals(goalNode.state as State)) {
+                        return [startNode, goalNode];
+                    }
                 }
             }
         }
