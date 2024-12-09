@@ -21,8 +21,8 @@ import {BidirectionalSearch} from '../../../../../tree-search/bidirectional-sear
 export class CoordinateSystemComponent implements OnInit, OnChanges {
   @Input() selectedAlgorithm!: string;
 
-  width = 1000;
-  height = 1000;
+  width = innerWidth / 2.1;
+  height = innerHeight / 1.2;
 
   showGrid = true; // Toggle to show/hide grid
   xCenter = this.width / 2;
