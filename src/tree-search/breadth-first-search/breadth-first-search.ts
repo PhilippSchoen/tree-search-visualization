@@ -7,7 +7,6 @@ import {SearchState} from "../search-state";
 
 export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, P extends SearchProblem<S, N>> extends SearchAgent<P, N> {
 
-
     frontier: N[] = [];
     explored: S[] = [];
 
@@ -67,7 +66,7 @@ export class BreadthFirstSearch<S extends Primitive | State, N extends Node<S>, 
                     this.explored.push(state);
                 }
             }
-            
+
             if(child.isGoalState()) {
                 return new SearchState(this.frontier, this.explored, child as N);
             }
