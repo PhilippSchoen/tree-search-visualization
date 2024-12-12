@@ -19,7 +19,7 @@ import {BidirectionalSearch} from '../../../../../tree-search/bidirectional-sear
   styleUrl: './coordinate-system.component.scss'
 })
 export class CoordinateSystemComponent implements OnInit, OnChanges {
-  @Input() selectedAlgorithm!: string;
+  @Input() selectedAlgorithm!: SearchAgent<any, any>;
 
   width = innerWidth / 2.1;
   height = innerHeight / 1.2;
@@ -29,8 +29,6 @@ export class CoordinateSystemComponent implements OnInit, OnChanges {
   yCenter = this.height / 2;
 
   gridLines = this.generateGridLines();
-
-  agent: SearchAgent<any, any>;
 
   generateGridLines() {
     const lines: { x1: number, y1: number, x2: number, y2: number }[] = [];
@@ -69,24 +67,11 @@ export class CoordinateSystemComponent implements OnInit, OnChanges {
   ];
 
   ngOnInit(): void {
-    switch(this.selectedAlgorithm) {
-      case 'Depth-Limited-Search':
-        this.agent = new DepthLimitedSearch(10);
-        break;
-      case 'Breadth-First-Search':
-        this.agent = new BreadthFirstSearch();
-        break;
-      case 'Greedy-Best-First-Search':
-        this.agent = new GreedyBestFirstSearch();
-        break;
-      default:
-        this.agent = new BreadthFirstSearch();
-    }
 
     const problem = new PathfindingProblem(new Position(0, 0), new Position(4, 4));
-    let state = this.agent.startStepSearch(problem);
+    let state = this.selectedAlgorithm.startStepSearch(problem);
     while(!state.solution) {
-      state = this.agent.searchStep();
+      state = this.selectedAlgorithm.searchStep();
       this.generateVisualization(state);
     }
     let node = state.solution;
@@ -99,40 +84,12 @@ export class CoordinateSystemComponent implements OnInit, OnChanges {
   counter = 0;
 
   ngOnChanges(changes:SimpleChanges) {
-    if(changes['selectedAlgorithm']) {
-
-      switch(this.selectedAlgorithm) {
-        case 'Depth-Limited-Search':
-          this.agent = new DepthLimitedSearch(10);
-          break;
-        case 'Breadth-First-Search':
-          this.agent = new BreadthFirstSearch();
-          break;
-        case 'Greedy-Best-First-Search':
-          this.agent = new GreedyBestFirstSearch();
-          break;
-        case 'A-Star-Search':
-          this.agent = new AStarSearch();
-          break;
-        case 'Uniform-Cost-Search':
-          this.agent = new UniformCostSearch();
-          break;
-        case 'Depth-First-Search':
-          this.agent = new DepthFirstSearch();
-          break;
-        case 'Bidirectional-Search':
-          this.agent = new BidirectionalSearch();
-          break;
-        default:
-          this.agent = new BreadthFirstSearch();
-      }
-
       this.squares = [];
 
       const problem = new PathfindingProblem(new Position(0, 0), new Position(4, 4));
-      let state = this.agent.startStepSearch(problem);
+      let state = this.selectedAlgorithm.startStepSearch(problem);
       while(!state.solution) {
-        state = this.agent.searchStep();
+        state = this.selectedAlgorithm.searchStep();
         this.generateVisualization(state);
       }
       let node = state.solution;
@@ -140,9 +97,6 @@ export class CoordinateSystemComponent implements OnInit, OnChanges {
         this.squares.push({position: node.state as Position, color: '#FF0000'});
         node = node.parent;
       }
-    }
-
-
 
   }
 }

@@ -24,6 +24,7 @@ import {GreedyBestFirstSearch} from "../../../../tree-search/greedy-best-first-s
 import {DepthLimitedSearch} from '../../../../tree-search/depth-limited-search/depth-limited-search';
 import {DepthFirstSearch} from '../../../../tree-search/depth-first-search/depth-first-search';
 import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/bidirectional-search';
+import {SearchAlgorithm} from './search-algorithm';
 
 
 @Component({
@@ -34,15 +35,23 @@ import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/
 })
 export class SearchTreeComponent implements AfterViewInit {
   @ViewChild('treeTab', {static: false}) treeTab: ElementRef;
-  @Input() selectedAlgorithm!: string;
+  @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: string;
-  @Output() algorithmChange = new EventEmitter<string>();
+  @Output() algorithmChange = new EventEmitter<SearchAgent<any, any>>();
 
-  searchAlgorithms: string[] = [
-    'Breadth-First-Search', 'Depth-First-Search', 'Depth-Limited-Search', 'Uniform-Cost-Search', 'Bidirectional-Search', 'Greedy-Best-First-Search', 'A-Star-Search'
-  ];
+  searchAlgorithms: Record<SearchAlgorithm, SearchAgent<any, any>> = {
+    [SearchAlgorithm.BFS]: new BreadthFirstSearch(),
+    [SearchAlgorithm.AStar]: new AStarSearch(),
+    [SearchAlgorithm.Dijkstra]: new UniformCostSearch(),
+    [SearchAlgorithm.GreedyBest]: new GreedyBestFirstSearch(),
+    [SearchAlgorithm.DLS]: new DepthLimitedSearch(10),
+    [SearchAlgorithm.DFS]: new DepthFirstSearch(),
+    [SearchAlgorithm.Bidirectional]: new BidirectionalSearch()
+  }
 
-  agent: SearchAgent<any, any>;
+  get searchAlgorithmValues() {
+    return Object.values(SearchAlgorithm);
+  }
 
   ngAfterViewInit() {
     const tabButtons = this.treeTab.nativeElement.querySelectorAll('button');
@@ -57,68 +66,25 @@ export class SearchTreeComponent implements AfterViewInit {
   handleTabChange(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const selectedTabId = target.getAttribute('aria-controls');
-    console.log('Tab changed:', selectedTabId);
 
-    switch(selectedTabId) {
-        case 'Breadth-First-Search':
-            this.agent = new BreadthFirstSearch();
-            break;
-        case 'A-Star-Search':
-            this.agent = new AStarSearch();
-            break;
-        case 'Uniform-Cost-Search':
-            this.agent = new UniformCostSearch();
-            break;
-        case 'Greedy-Best-First-Search':
-            this.agent = new GreedyBestFirstSearch();
-            break;
-        case 'Depth-Limited-Search':
-            this.agent = new DepthLimitedSearch(10);
-            break;
-        case 'Depth-First-Search':
-            this.agent = new DepthFirstSearch();
-            break;
-        case 'Bidirectional-Search':
-            this.agent = new BidirectionalSearch();
-            break;
-        default:
-    }
-
-    this.algorithmChange.emit(selectedTabId);
+    this.selectedAlgorithm = this.searchAlgorithms[selectedTabId];
+    this.algorithmChange.emit(this.selectedAlgorithm);
 
     this.links = [];
     this.nodes = [];
 
-    const problem = new PathfindingProblem(new Position(0, 0), new Position(3, 3));
-    let state = this.agent.startStepSearch(problem);
-    this.generateTreeData(state);
-    while(!state.solution) {
-      state = this.agent.searchStep();
-      this.generateTreeData(state);
-    }
+    this.generateTree();
   }
 
   constructor(private cdr: ChangeDetectorRef) {
-    const problem = new PathfindingProblem(new Position(0, 0), new Position(3, 3));
-    const searchAgent = new AStarSearch();
-    let state = searchAgent.startStepSearch(problem);
-    this.generateTreeData(state);
-    while(!state.solution) {
-        state = searchAgent.searchStep();
-        this.generateTreeData(state);
-    }
-
+    this.selectedAlgorithm = this.searchAlgorithms[SearchAlgorithm.BFS];
+    this.generateTree();
   }
-
 
   nodes: GraphNode[] = [];
   links: GraphLink[] = [];
 
   layout = new DagreNodesOnlyLayout();
-
-  onNodeSelect($event: any) {
-
-  }
 
   setColor(node: { label: string }) {
     if(this.solutionNodes.includes(node.label)) {
@@ -137,11 +103,18 @@ export class SearchTreeComponent implements AfterViewInit {
   frontierNodes: string[] = [];
   solutionNodes: string[] = [];
 
-  generateTreeData(searchState: SearchState<any>) {
 
-    // const tree = new GraphTree();
-    // this.nodes = tree.nodes;
-    // this.links = tree.links;
+  generateTree() {
+    const problem = new PathfindingProblem(new Position(0, 0), new Position(3, 3));
+    let state = this.selectedAlgorithm.startStepSearch(problem);
+    this.generateTreeData(state);
+    while(!state.solution) {
+      state = this.selectedAlgorithm.searchStep();
+      this.generateTreeData(state);
+    }
+  }
+
+  generateTreeData(searchState: SearchState<any>) {
     const clusters: GraphCluster[] = [];
 
     this.frontierNodes.forEach(node => {

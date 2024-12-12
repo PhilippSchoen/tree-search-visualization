@@ -1,25 +1,17 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {NgFor} from "@angular/common";
+import {NgFor, NgIf} from "@angular/common";
 import {CoordinateSystemComponent} from './coordinate-system/coordinate-system.component';
-import {BreadthFirstSearch} from '../../../../tree-search/breadth-first-search/breadth-first-search';
-import {AStarSearch} from '../../../../tree-search/a-star-search/a-star-search';
-import {UniformCostSearch} from '../../../../tree-search/uniform-cost-search/uniform-cost-search';
-import {GreedyBestFirstSearch} from '../../../../tree-search/greedy-best-first-search/greedy-best-first-search';
-import {DepthLimitedSearch} from '../../../../tree-search/depth-limited-search/depth-limited-search';
-import {DepthFirstSearch} from '../../../../tree-search/depth-first-search/depth-first-search';
-import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/bidirectional-search';
-import {PathfindingProblem} from '../../../../problems/pathfinding-problem/pathfinding-problem';
-import {Position} from '../../../../problems/pathfinding-problem/position';
+import {SearchAgent} from '../../../../tree-search/search-agent';
 
 @Component({
   selector: 'app-search-problem',
-  imports: [NgFor, CoordinateSystemComponent],
+  imports: [NgFor, NgIf, CoordinateSystemComponent],
   templateUrl: './search-problem.component.html',
   styleUrl: './search-problem.component.scss'
 })
 export class SearchProblemComponent implements AfterViewInit {
   @ViewChild('problemTab', {static: false}) problemTab: ElementRef;
-  @Input() selectedAlgorithm!: string;
+  @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: string;
   @Output() problemChange = new EventEmitter<string>();
 

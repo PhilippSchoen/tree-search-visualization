@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {SearchProblemComponent} from './search-problem/search-problem.component';
 import {SearchTreeComponent} from './search-tree/search-tree.component';
+import {SearchAgent} from '../../../tree-search/search-agent';
+import {AStarSearch} from '../../../tree-search/a-star-search/a-star-search';
+import {BreadthFirstSearch} from '../../../tree-search/breadth-first-search/breadth-first-search';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +14,16 @@ import {SearchTreeComponent} from './search-tree/search-tree.component';
 export class AppComponent implements OnInit {
 
   selectedProblem: string;
-  selectedAlgorithm: string;
+  selectedAlgorithm: SearchAgent<any, any>;
+
+  constructor() {
+    this.selectedAlgorithm = new BreadthFirstSearch();
+  }
 
   ngOnInit() {
   }
 
-  onAlgorithmChange(newAlgorithm: string) {
+  onAlgorithmChange(newAlgorithm: SearchAgent<any, any>) {
     this.selectedAlgorithm = newAlgorithm;
   }
 
