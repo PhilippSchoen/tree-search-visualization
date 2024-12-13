@@ -8,7 +8,6 @@ export class EightPuzzleState implements State {
         this.board = [1, 2, 3, 4, 5, 6, 7, 8, 0];
         const goal: EightPuzzleState = {board: [1, 2, 3, 4, 5, 6, 7, 8, 0]} as EightPuzzleState;
 
-        // TODO: Unsolvable boards exist, fix
         while(this.equals(goal) || !this.isSolvable()) {
             this.board.sort(() => Math.random() - 0.5);
         }

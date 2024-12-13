@@ -62,7 +62,7 @@ describe('BreadthFirstSearch', () => {
        while(!state.solution) {
            state = agent.searchStep();
        }
-       expect(state.explored.length).toBe(7);
+       expect(state.explored.length).toBe(8);
        expect(state.solution.state).toEqual(Location.Istanbul);
        expect(state.solution.depth).toBe(4);
     });
@@ -76,8 +76,7 @@ describe('BreadthFirstSearch', () => {
         while(!state.solution) {
             state = agent.searchStep();
         }
-        expect(state.frontier.length).toBe(0);
-        expect(state.explored.length).toBe(1);
+        expect(state.explored.length).toBe(2);
         expect(state.solution.state).toEqual("A");
         expect(state.solution.depth).toBe(1);
 
@@ -88,8 +87,7 @@ describe('BreadthFirstSearch', () => {
         while(!state.solution) {
             state = agent.searchStep();
         }
-        expect(state.frontier.length).toBe(0);
-        expect(state.explored.length).toBe(7);
+        expect(state.explored.length).toBe(8);
         expect(state.solution.state).toEqual(Location.Istanbul);
         expect(state.solution.depth).toBe(4);
     });

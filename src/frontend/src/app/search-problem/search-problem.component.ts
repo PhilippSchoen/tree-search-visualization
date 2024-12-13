@@ -2,10 +2,11 @@ import {AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewC
 import {NgFor, NgIf} from "@angular/common";
 import {CoordinateSystemComponent} from './coordinate-system/coordinate-system.component';
 import {SearchAgent} from '../../../../tree-search/search-agent';
+import {MazeComponent} from './maze/maze.component';
 
 @Component({
   selector: 'app-search-problem',
-  imports: [NgFor, NgIf, CoordinateSystemComponent],
+  imports: [NgFor, NgIf, CoordinateSystemComponent, MazeComponent],
   templateUrl: './search-problem.component.html',
   styleUrl: './search-problem.component.scss'
 })
@@ -15,7 +16,7 @@ export class SearchProblemComponent implements AfterViewInit {
   @Input() selectedProblem!: string;
   @Output() problemChange = new EventEmitter<string>();
 
-  searchProblems: string[] = ['Pathfinding', 'Flight-Route', 'Eight-Puzzle', 'Maze'];
+  searchProblems: string[] = ['Pathfinding', 'Maze'];
 
   ngAfterViewInit() {
     const tabButtons = this.problemTab.nativeElement.querySelectorAll('button');
@@ -34,12 +35,6 @@ export class SearchProblemComponent implements AfterViewInit {
     switch(selectedTabId) {
       case 'Pathfinding':
         this.problemChange.emit('Pathfinding');
-        break;
-      case 'Flight-Route':
-        this.problemChange.emit('Flight-Route');
-        break;
-      case 'Eight-Puzzle':
-        this.problemChange.emit('Eight-Puzzle');
         break;
       case 'Maze':
         this.problemChange.emit('Maze');
