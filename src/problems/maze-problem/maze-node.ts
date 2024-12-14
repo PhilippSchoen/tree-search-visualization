@@ -10,7 +10,7 @@ export class MazeNode extends Node<MazeState> {
         if(!goalState) {
             for(let i = 0; i < state.maze.blocks.length; i++) {
                 for(let j = 0; j < state.maze.blocks[i].length; j++) {
-                    if(state.maze.blocks[i][j] === MazeBlock.Goal) {
+                    if(state.maze.blocks[j][i] === MazeBlock.Goal) {
                         this.goalState = new MazeState(i, j, state.maze);
                         break;
                     }
@@ -18,6 +18,8 @@ export class MazeNode extends Node<MazeState> {
                 if(this.goalState) break;
             }
         }
+
+        this.heuristic = this.calculateHeuristic();
     }
 
     expand(): Node<MazeState>[] {
@@ -49,6 +51,10 @@ export class MazeNode extends Node<MazeState> {
 
     printSolution(): void {
         console.log("Imagine a maze here...");
+    }
+
+    private calculateHeuristic(): number {
+        return Math.abs(this.state.x - this.goalState.x) + Math.abs(this.state.y - this.goalState.y);
     }
 
 }

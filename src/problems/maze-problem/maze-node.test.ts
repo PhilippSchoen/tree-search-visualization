@@ -126,4 +126,34 @@ describe('MazeNode', () => {
        const upDown = upChildren.find(child => child.state.x === 1 && child.state.y === 3);
        expect(upDown).toBeDefined();
    });
+
+    test('Heuristic should be calculated correctly', () => {
+        const blocks = [
+            [MazeBlock.Empty, MazeBlock.Barrier, MazeBlock.Barrier],
+            [MazeBlock.Empty, MazeBlock.Start, MazeBlock.Goal],
+            [MazeBlock.Barrier, MazeBlock.Barrier, MazeBlock.Empty]];
+        const maze = new Maze(5);
+        maze.blocks = blocks;
+        const state = new MazeState(1, 1, maze);
+        const node = new MazeNode(state);
+        expect(node.heuristic).toBe(1);
+    });
+
+    test('Heuristic should be calculated correctly for child nodes', () => {
+        const blocks = [
+            [MazeBlock.Empty, MazeBlock.Barrier, MazeBlock.Barrier],
+            [MazeBlock.Empty, MazeBlock.Start, MazeBlock.Goal],
+            [MazeBlock.Barrier, MazeBlock.Barrier, MazeBlock.Empty]
+        ];
+        const maze = new Maze(5);
+        maze.blocks = blocks;
+        const state = new MazeState(1, 1, maze);
+        const node = new MazeNode(state);
+        expect(node.heuristic).toBe(1);
+        const children = node.expand();
+        const left = children.find(child => child.state.x === 0 && child.state.y === 1);
+        expect(left.heuristic).toBe(2);
+        const right = children.find(child => child.state.x === 2 && child.state.y === 1);
+        expect(right.heuristic).toBe(0);
+    });
 });

@@ -11,7 +11,7 @@ export class MazeProblem extends SearchProblem<MazeState, MazeNode> {
         if(!goalState) {
             for(let i = 0; i < initialState.maze.blocks.length; i++) {
                 for(let j = 0; j < initialState.maze.blocks[i].length; j++) {
-                    if(initialState.maze.blocks[i][j] === MazeBlock.Goal) {
+                    if(initialState.maze.blocks[j][i] === MazeBlock.Goal) {
                         this.goalState = new MazeState(i, j, initialState.maze);
                         break;
                     }
