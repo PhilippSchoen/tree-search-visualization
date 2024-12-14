@@ -3,6 +3,12 @@ import {NgFor, NgIf} from "@angular/common";
 import {CoordinateSystemComponent} from './coordinate-system/coordinate-system.component';
 import {SearchAgent} from '../../../../tree-search/search-agent';
 import {MazeComponent} from './maze/maze.component';
+import {Problem} from "./entities/problem";
+import {SearchProblem} from "../../../../problems/search-problem";
+import {PathfindingProblem} from "../../../../problems/pathfinding-problem/pathfinding-problem";
+import {Position} from "../../../../problems/pathfinding-problem/position";
+import {MazeProblem} from "../../../../problems/maze-problem/maze-problem";
+import {MazeState} from "../../../../problems/maze-problem/maze-state";
 
 @Component({
   selector: 'app-search-problem',
@@ -13,10 +19,13 @@ import {MazeComponent} from './maze/maze.component';
 export class SearchProblemComponent implements AfterViewInit {
   @ViewChild('problemTab', {static: false}) problemTab: ElementRef;
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
-  @Input() selectedProblem!: string;
-  @Output() problemChange = new EventEmitter<string>();
+  @Input() selectedProblem!: SearchProblem<any, any>;
+  @Output() problemChange = new EventEmitter<SearchProblem<any, any>>();
 
-  searchProblems: string[] = ['Pathfinding', 'Maze'];
+  searchProblems: Record<Problem, SearchProblem<any, any>> = {
+    [Problem.Pathfinding]: new PathfindingProblem(new Position(0, 0), new Position(4, 4)),
+    [Problem.Maze]: new MazeProblem(new MazeState(1, 1)),
+  }
 
   ngAfterViewInit() {
     const tabButtons = this.problemTab.nativeElement.querySelectorAll('button');
@@ -32,14 +41,11 @@ export class SearchProblemComponent implements AfterViewInit {
     const target = event.target as HTMLElement;
     const selectedTabId = target.getAttribute('aria-controls');
 
-    switch(selectedTabId) {
-      case 'Pathfinding':
-        this.problemChange.emit('Pathfinding');
-        break;
-      case 'Maze':
-        this.problemChange.emit('Maze');
-        break;
-    }
+    this.selectedProblem = this.searchProblems[selectedTabId as Problem];
+    this.problemChange.emit(this.selectedProblem);
+  }
 
+  get searchProblemValues() {
+    return Object.values(Problem);
   }
 }

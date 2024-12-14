@@ -12,4 +12,8 @@ export class MazeState implements State {
     equals(state: MazeState): boolean {
         return this.x === state.x && this.y === state.y;
     }
+
+    toString(): string {
+        return `(${this.x}-${this.y})`;
+    }
 }

@@ -1,16 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {Position} from '../../../../../problems/pathfinding-problem/position';
-import {DepthLimitedSearch} from '../../../../../tree-search/depth-limited-search/depth-limited-search';
 import {PathfindingProblem} from '../../../../../problems/pathfinding-problem/pathfinding-problem';
 import {SearchState} from '../../../../../tree-search/search-state';
-import {BreadthFirstSearch} from '../../../../../tree-search/breadth-first-search/breadth-first-search';
-import {GreedyBestFirstSearch} from '../../../../../tree-search/greedy-best-first-search/greedy-best-first-search';
 import {SearchAgent} from '../../../../../tree-search/search-agent';
-import {AStarSearch} from '../../../../../tree-search/a-star-search/a-star-search';
-import {UniformCostSearch} from '../../../../../tree-search/uniform-cost-search/uniform-cost-search';
-import {DepthFirstSearch} from '../../../../../tree-search/depth-first-search/depth-first-search';
-import {BidirectionalSearch} from '../../../../../tree-search/bidirectional-search/bidirectional-search';
+import {SearchProblem} from "../../../../../problems/search-problem";
 
 @Component({
   selector: 'app-coordinate-system',
@@ -20,6 +14,7 @@ import {BidirectionalSearch} from '../../../../../tree-search/bidirectional-sear
 })
 export class CoordinateSystemComponent implements OnInit, OnChanges {
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
+  @Input() selectedProblem!: SearchProblem<any, any>;
 
   width = innerWidth / 2.1;
   height = innerHeight / 1.2;
@@ -57,19 +52,10 @@ export class CoordinateSystemComponent implements OnInit, OnChanges {
   }
 
   squares: {position: Position, color: string}[] = [
-    // {position: new Position(0, 0), color: '#ff0000'},
-    // {position: new Position(0, 1), color: '#ff0000'},
-    // {position: new Position(0, 2), color: '#ff0000'},
-    // {position: new Position(1, 0), color: '#00ff00'},
-    // {position: new Position(2, 0), color: '#0000ff'},
-    // {position: new Position(0, -1), color: '#00ff00'},
-    // {position: new Position(-1, 0), color: '#00ff00'},
   ];
 
   ngOnInit(): void {
-
-    const problem = new PathfindingProblem(new Position(0, 0), new Position(4, 4));
-    let state = this.selectedAlgorithm.startStepSearch(problem);
+    let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
     while(!state.solution) {
       state = this.selectedAlgorithm.searchStep();
       this.generateVisualization(state);
@@ -86,8 +72,7 @@ export class CoordinateSystemComponent implements OnInit, OnChanges {
   ngOnChanges(changes:SimpleChanges) {
       this.squares = [];
 
-      const problem = new PathfindingProblem(new Position(0, 0), new Position(4, 4));
-      let state = this.selectedAlgorithm.startStepSearch(problem);
+      let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
       while(!state.solution) {
         state = this.selectedAlgorithm.searchStep();
         this.generateVisualization(state);

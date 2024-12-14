@@ -4,8 +4,8 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
-  Output,
+  Input, OnChanges,
+  Output, SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {NgFor} from "@angular/common";
@@ -24,7 +24,8 @@ import {GreedyBestFirstSearch} from "../../../../tree-search/greedy-best-first-s
 import {DepthLimitedSearch} from '../../../../tree-search/depth-limited-search/depth-limited-search';
 import {DepthFirstSearch} from '../../../../tree-search/depth-first-search/depth-first-search';
 import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/bidirectional-search';
-import {SearchAlgorithm} from './search-algorithm';
+import {SearchAlgorithm} from './entities/search-algorithm';
+import {SearchProblem} from "../../../../problems/search-problem";
 
 
 @Component({
@@ -33,10 +34,10 @@ import {SearchAlgorithm} from './search-algorithm';
   templateUrl: './search-tree.component.html',
   styleUrl: './search-tree.component.scss'
 })
-export class SearchTreeComponent implements AfterViewInit {
+export class SearchTreeComponent implements AfterViewInit, OnChanges {
   @ViewChild('treeTab', {static: false}) treeTab: ElementRef;
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
-  @Input() selectedProblem!: string;
+  @Input() selectedProblem!: SearchProblem<any, any>;
   @Output() algorithmChange = new EventEmitter<SearchAgent<any, any>>();
 
   searchAlgorithms: Record<SearchAlgorithm, SearchAgent<any, any>> = {
@@ -61,6 +62,12 @@ export class SearchTreeComponent implements AfterViewInit {
         this.handleTabChange(event);
       });
     });
+    this.selectedAlgorithm = this.searchAlgorithms[SearchAlgorithm.BFS];
+    this.generateTree();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.generateTree();
   }
 
   handleTabChange(event: MouseEvent): void {
@@ -77,8 +84,7 @@ export class SearchTreeComponent implements AfterViewInit {
   }
 
   constructor(private cdr: ChangeDetectorRef) {
-    this.selectedAlgorithm = this.searchAlgorithms[SearchAlgorithm.BFS];
-    this.generateTree();
+
   }
 
   nodes: GraphNode[] = [];
@@ -105,13 +111,16 @@ export class SearchTreeComponent implements AfterViewInit {
 
 
   generateTree() {
-    const problem = new PathfindingProblem(new Position(0, 0), new Position(3, 3));
-    let state = this.selectedAlgorithm.startStepSearch(problem);
-    this.generateTreeData(state);
-    while(!state.solution) {
-      state = this.selectedAlgorithm.searchStep();
+
+      let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
       this.generateTreeData(state);
-    }
+      while(!state.solution) {
+        state = this.selectedAlgorithm.searchStep();
+        this.generateTreeData(state);
+      }
+      this.generateTreeData(state);
+    
+
   }
 
   generateTreeData(searchState: SearchState<any>) {
@@ -119,6 +128,7 @@ export class SearchTreeComponent implements AfterViewInit {
 
     this.frontierNodes.forEach(node => {
       if(!searchState.frontier.find(n => n.state.toString() === node)) {
+        console.log("Explored node", node);
         this.frontierNodes = this.frontierNodes.filter(n => n !== node);
         this.exploredNodes.push(node);
       }
