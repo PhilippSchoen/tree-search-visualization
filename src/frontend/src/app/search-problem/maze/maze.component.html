@@ -1,7 +1,7 @@
 <svg [attr.width]="width" [attr.height]="height" style="background-color:#f0f0f0;">
 
   <!-- Grid lines (optional) -->
-  <g *ngIf="showGrid">
+  <g>
     <ng-container *ngFor="let myLine of gridLines">
       <line [attr.x1]="myLine.x1" [attr.y1]="myLine.y1" [attr.x2]="myLine.x2" [attr.y2]="myLine.y2" stroke="#ddd" />
     </ng-container>

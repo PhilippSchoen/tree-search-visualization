@@ -12,7 +12,7 @@ import {SearchProblem} from "../../../../../problems/search-problem";
   templateUrl: './coordinate-system.component.html',
   styleUrl: './coordinate-system.component.scss'
 })
-export class CoordinateSystemComponent implements OnInit, OnChanges {
+export class CoordinateSystemComponent implements OnChanges {
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
 
@@ -53,19 +53,6 @@ export class CoordinateSystemComponent implements OnInit, OnChanges {
 
   squares: {position: Position, color: string}[] = [
   ];
-
-  ngOnInit(): void {
-    let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
-    while(!state.solution) {
-      state = this.selectedAlgorithm.searchStep();
-      this.generateVisualization(state);
-    }
-    let node = state.solution;
-    while(node) {
-      this.squares.push({position: node.state as Position, color: '#FF0000'});
-      node = node.parent;
-    }
-  }
 
   counter = 0;
 

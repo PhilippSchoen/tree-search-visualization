@@ -119,7 +119,7 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
         this.generateTreeData(state);
       }
       this.generateTreeData(state);
-    
+
 
   }
 
