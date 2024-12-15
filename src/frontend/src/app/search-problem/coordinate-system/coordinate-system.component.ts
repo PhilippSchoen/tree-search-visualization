@@ -5,6 +5,7 @@ import {PathfindingProblem} from '../../../../../problems/pathfinding-problem/pa
 import {SearchState} from '../../../../../tree-search/search-state';
 import {SearchAgent} from '../../../../../tree-search/search-agent';
 import {SearchProblem} from "../../../../../problems/search-problem";
+import {Node} from "../../../../../tree-search/node";
 
 @Component({
   selector: 'app-coordinate-system',
@@ -15,6 +16,7 @@ import {SearchProblem} from "../../../../../problems/search-problem";
 export class CoordinateSystemComponent implements OnChanges {
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
+  @Input() searchQueue!: SearchState<any>[];
 
   width = innerWidth / 2.1;
   height = innerHeight / 1.2;
@@ -24,6 +26,7 @@ export class CoordinateSystemComponent implements OnChanges {
   yCenter = this.height / 2;
 
   gridLines = this.generateGridLines();
+  squares: {position: Position, color: string}[] = [];
 
   generateGridLines() {
     const lines: { x1: number, y1: number, x2: number, y2: number }[] = [];
@@ -41,34 +44,64 @@ export class CoordinateSystemComponent implements OnChanges {
   constructor() {
   }
 
-  generateVisualization(state: SearchState<any>) {
-    for(let position of state.explored) {
-      this.squares.push({position, color: '#00FF00'});
-    }
+  generateVisualization() {
+    const state = this.searchQueue?.shift();
 
-    for(let node of state.frontier) {
-      this.squares.push({position: node.state as Position, color: '#0000FF'});
+    if(state) {
+      this.squares = [];
+      for(let position of state.explored) {
+        this.squares.push({position, color: '#00FF00'});
+      }
+
+      this.drawFrontierAsync(state.frontier).then(() => {
+        let solution = state.solution;
+        const solutionNodes: Node<unknown>[] = [];
+        while(solution) {
+            solutionNodes.push(solution);
+            solution = solution.parent;
+        }
+        if(solutionNodes.length > 0) {
+          this.drawSolutionAsync(solutionNodes.reverse()).then(() => {
+            if(this.searchQueue.length > 0) {
+              this.generateVisualization();
+            }
+          });
+        } else {
+            if(this.searchQueue.length > 0) {
+                this.generateVisualization();
+            }
+        }
+      });
+
     }
   }
 
-  squares: {position: Position, color: string}[] = [
-  ];
+  private async drawFrontierAsync(nodes: Node<unknown>[]) {
+    const node = nodes.shift();
+    this.squares.push({position: node.state as Position, color: '#0000FF'});
 
-  counter = 0;
+    if(nodes.length > 0) {
+      await this.drawFrontierAsync(nodes);
+    }
+  }
+
+  private async drawSolutionAsync(nodes: Node<unknown>[]) {
+    const node = nodes.shift();
+    this.squares.push({position: node.state as Position, color: '#FF0000'});
+    await this.sleep(50);
+
+    if(nodes.length > 0) {
+      await this.drawSolutionAsync(nodes);
+    }
+  }
 
   ngOnChanges(changes:SimpleChanges) {
-      this.squares = [];
+    if(this.selectedProblem instanceof PathfindingProblem) {
+      this.generateVisualization();
+    }
+  }
 
-      let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
-      while(!state.solution) {
-        state = this.selectedAlgorithm.searchStep();
-        this.generateVisualization(state);
-      }
-      let node = state.solution;
-      while(node) {
-        this.squares.push({position: node.state as Position, color: '#FF0000'});
-        node = node.parent;
-      }
-
+  private sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

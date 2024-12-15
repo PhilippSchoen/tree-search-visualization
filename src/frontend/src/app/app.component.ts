@@ -7,6 +7,8 @@ import {BreadthFirstSearch} from '../../../tree-search/breadth-first-search/brea
 import {SearchProblem} from "../../../problems/search-problem";
 import {PathfindingProblem} from "../../../problems/pathfinding-problem/pathfinding-problem";
 import {Position} from "../../../problems/pathfinding-problem/position";
+import {SearchState} from "../../../tree-search/search-state";
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-root',
@@ -15,9 +17,10 @@ import {Position} from "../../../problems/pathfinding-problem/position";
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-
   selectedProblem: SearchProblem<any, any>;
   selectedAlgorithm: SearchAgent<any, any>;
+
+  searchQueue: SearchState<any>[] = [];
 
   constructor() {
     this.selectedAlgorithm = new BreadthFirstSearch();
@@ -25,13 +28,25 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.search();
   }
 
   onAlgorithmChange(newAlgorithm: SearchAgent<any, any>) {
     this.selectedAlgorithm = newAlgorithm;
+    this.search();
   }
 
   onProblemChange(newProblem: SearchProblem<any, any>) {
     this.selectedProblem = newProblem;
+    this.search();
+  }
+
+  search() {
+    let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
+    this.searchQueue.push(_.cloneDeep(state))
+    while(!state.solution) {
+      state = this.selectedAlgorithm.searchStep();
+      this.searchQueue.push(_.cloneDeep(state));
+    }
   }
 }

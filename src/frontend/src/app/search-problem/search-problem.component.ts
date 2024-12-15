@@ -9,6 +9,7 @@ import {PathfindingProblem} from "../../../../problems/pathfinding-problem/pathf
 import {Position} from "../../../../problems/pathfinding-problem/position";
 import {MazeProblem} from "../../../../problems/maze-problem/maze-problem";
 import {MazeState} from "../../../../problems/maze-problem/maze-state";
+import {SearchState} from "../../../../tree-search/search-state";
 
 @Component({
   selector: 'app-search-problem',
@@ -20,10 +21,11 @@ export class SearchProblemComponent implements AfterViewInit {
   @ViewChild('problemTab', {static: false}) problemTab: ElementRef;
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
+  @Input() searchQueue!: SearchState<any>[];
   @Output() problemChange = new EventEmitter<SearchProblem<any, any>>();
 
   searchProblems: Record<Problem, SearchProblem<any, any>> = {
-    [Problem.Pathfinding]: new PathfindingProblem(new Position(0, 0), new Position(4, 4)),
+    [Problem.Pathfinding]: new PathfindingProblem(new Position(0, 0), new Position(7, 7)),
     [Problem.Maze]: new MazeProblem(new MazeState(1, 1)),
   }
 

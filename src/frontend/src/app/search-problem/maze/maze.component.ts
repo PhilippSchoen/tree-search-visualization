@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {NgFor, NgIf} from '@angular/common';
+import {NgFor} from '@angular/common';
 import {MazeBlock} from '../../../../../problems/maze-problem/maze-block';
 import {MazeProblem} from '../../../../../problems/maze-problem/maze-problem';
 import {MazeState} from '../../../../../problems/maze-problem/maze-state';
@@ -7,7 +7,6 @@ import {SearchAgent} from "../../../../../tree-search/search-agent";
 import {SearchProblem} from "../../../../../problems/search-problem";
 import {Node} from "../../../../../tree-search/node";
 import {SearchState} from "../../../../../tree-search/search-state";
-import * as _ from "lodash";
 
 @Component({
   selector: 'app-maze',
@@ -18,14 +17,13 @@ import * as _ from "lodash";
 export class MazeComponent implements OnChanges {
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
+  @Input() searchQueue!: SearchState<any>[];
 
   width = innerWidth / 2.1;
   height = innerHeight / 1.2;
 
   squares: { x: number, y: number, color: string }[] = [];
   gridLines = this.generateGridLines();
-
-  stateQueue: SearchState<MazeState>[] = [];
 
   private generateGridLines() {
     const lines: { x1: number, y1: number, x2: number, y2: number }[] = [];
@@ -42,22 +40,14 @@ export class MazeComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if(this.selectedProblem instanceof MazeProblem) {
-
-      let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
-      this.stateQueue.push(state);
       this.generateVisualization();
-      while(!state.solution) {
-        console.log("Continuing search");
-        state = this.selectedAlgorithm.searchStep();
-        this.stateQueue.push(_.cloneDeep(state));
-      }
     }
   }
 
   // TODO: Switch to Observables for cancellation
   generateVisualization() {
     this.squares = [];
-    const state = this.stateQueue.shift();
+    const state = this.searchQueue.shift();
 
     if(state) {
       this.renderWalls();
@@ -75,7 +65,7 @@ export class MazeComponent implements OnChanges {
           solution = solution.parent;
         }
         this.drawSolutionAsync(solutionNodes.reverse()).then(() => {
-          if(this.stateQueue.length > 0) {
+          if(this.searchQueue.length > 0) {
             this.generateVisualization();
           }
         });
