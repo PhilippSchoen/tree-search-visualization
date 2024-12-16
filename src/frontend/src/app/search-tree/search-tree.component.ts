@@ -111,7 +111,6 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
 
 
   generateTree() {
-
       let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
       this.generateTreeData(state);
       while(!state.solution) {
@@ -119,8 +118,6 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
         this.generateTreeData(state);
       }
       this.generateTreeData(state);
-
-
   }
 
   generateTreeData(searchState: SearchState<any>) {

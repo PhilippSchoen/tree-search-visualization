@@ -27,7 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.selectedAlgorithm = new BreadthFirstSearch();
-    this.selectedProblem = new PathfindingProblem(new Position(0, 0), new Position(8, 8));
+    this.selectedProblem = new PathfindingProblem(new Position(0, 0), new Position(4, 4));
   }
 
   ngOnInit() {
@@ -58,12 +58,21 @@ export class AppComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
       this.searchStateSubject.next(_.cloneDeep(state));
-      while (!state.solution) {
-        state = this.selectedAlgorithm.searchStep();
-        console.log("Sending data: ", state);
-        this.searchStateSubject.next(_.cloneDeep(state));
+      this.performSearchStep();
+    });
+  }
+
+  private performSearchStep() {
+    setTimeout(() => {
+      let state = this.selectedAlgorithm.searchStep();
+      console.log("Sending data: ", state);
+      this.searchStateSubject.next(_.cloneDeep(state));
+      if(state.solution) {
+        this.searchStateSubject.complete();
       }
-      this.searchStateSubject.complete();
+      else {
+        this.performSearchStep();
+      }
     }, 0);
   }
 
