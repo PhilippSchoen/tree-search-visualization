@@ -6,18 +6,17 @@
     <line [attr.x1]="0" [attr.y1]="yCenter" [attr.x2]="width" [attr.y2]="yCenter" stroke="black" />
     <line [attr.x1]="xCenter" [attr.y1]="0" [attr.x2]="xCenter" [attr.y2]="height" stroke="black" />
 
-    <!-- Grid lines (optional) -->
+    <text [attr.x]="width - 20" [attr.y]="yCenter - 10" font-size="10">X</text>
+    <text [attr.x]="xCenter + 10" [attr.y]="15" font-size="10">Y</text>
+
+    <!--    Grid-->
     <g *ngIf="showGrid">
       <ng-container *ngFor="let myLine of gridLines">
         <line [attr.x1]="myLine.x1" [attr.y1]="myLine.y1" [attr.x2]="myLine.x2" [attr.y2]="myLine.y2" stroke="#ddd" />
       </ng-container>
     </g>
 
-    Example Axis Labels
-    <text [attr.x]="width - 20" [attr.y]="yCenter - 10" font-size="10">X</text>
-    <text [attr.x]="xCenter + 10" [attr.y]="15" font-size="10">Y</text>
-
-    <!-- A filled square on a grid block -->
+    <!--   Frontier, Explored, Solution  -->
     <rect *ngFor="let square of squares" [attr.x]="xCenter + (square.position.x * 25)" [attr.y]="yCenter + (square.position.y * 25)" [attr.width]="25" [attr.height]="25" [attr.fill]="'#444444'" />
     <rect *ngFor="let square of squares" [attr.x]="xCenter + (square.position.x * 25) + 1" [attr.y]="yCenter + (square.position.y * 25) + 1" [attr.width]="23" [attr.height]="23" [attr.fill]="square.color" />
   </svg>

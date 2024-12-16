@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
 import {NgFor, NgIf} from "@angular/common";
 import {CoordinateSystemComponent} from './coordinate-system/coordinate-system.component';
 import {SearchAgent} from '../../../../tree-search/search-agent';
@@ -10,6 +10,7 @@ import {Position} from "../../../../problems/pathfinding-problem/position";
 import {MazeProblem} from "../../../../problems/maze-problem/maze-problem";
 import {MazeState} from "../../../../problems/maze-problem/maze-state";
 import {SearchState} from "../../../../tree-search/search-state";
+import {Observable, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-search-problem',
@@ -17,12 +18,37 @@ import {SearchState} from "../../../../tree-search/search-state";
   templateUrl: './search-problem.component.html',
   styleUrl: './search-problem.component.scss'
 })
-export class SearchProblemComponent implements AfterViewInit {
+export class SearchProblemComponent implements AfterViewInit, OnDestroy {
   @ViewChild('problemTab', {static: false}) problemTab: ElementRef;
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
   @Input() searchQueue!: SearchState<any>[];
   @Output() problemChange = new EventEmitter<SearchProblem<any, any>>();
+
+  @Input() set searchState(obs: Observable<SearchState<any>>) {
+    if(this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+    this.searchSubscription = obs.subscribe({
+      next: (state) => {
+        console.log("Rendering... ", state);
+        for(let i = 0; i < state.frontier.length; i++) {
+          this.squares.push({position: new Position((state.frontier[i].state as Position).x, (state.frontier[i].state as Position).y), color: '#FF0000'});
+        }
+      },
+      complete: () => {
+        console.log("Search ended");
+      }
+    });
+  }
+
+  queue: {position: Position, color: string}[] = [];
+
+  squares: {position: Position, color: string}[] = [
+    {position: new Position(0, 0), color: '#0000FF'},
+  ];
+
+  private searchSubscription: Subscription;
 
   searchProblems: Record<Problem, SearchProblem<any, any>> = {
     [Problem.Pathfinding]: new PathfindingProblem(new Position(0, 0), new Position(7, 7)),
@@ -37,6 +63,10 @@ export class SearchProblemComponent implements AfterViewInit {
         this.handleTabChange(event);
       });
     });
+  }
+
+  ngOnDestroy() {
+    this.searchSubscription?.unsubscribe();
   }
 
   handleTabChange(event: MouseEvent): void {

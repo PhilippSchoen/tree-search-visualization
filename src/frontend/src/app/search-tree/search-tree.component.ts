@@ -128,7 +128,6 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
 
     this.frontierNodes.forEach(node => {
       if(!searchState.frontier.find(n => n.state.toString() === node)) {
-        console.log("Explored node", node);
         this.frontierNodes = this.frontierNodes.filter(n => n !== node);
         this.exploredNodes.push(node);
       }

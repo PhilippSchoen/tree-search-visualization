@@ -6,6 +6,7 @@ import {SearchState} from '../../../../../tree-search/search-state';
 import {SearchAgent} from '../../../../../tree-search/search-agent';
 import {SearchProblem} from "../../../../../problems/search-problem";
 import {Node} from "../../../../../tree-search/node";
+import {Observable, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-coordinate-system',
@@ -17,6 +18,17 @@ export class CoordinateSystemComponent implements OnChanges {
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
   @Input() searchQueue!: SearchState<any>[];
+
+  @Input() set searchState(obs: Observable<SearchState<any>>) {
+    if(this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+    this.searchSubscription = obs.subscribe((state) => {
+      console.log("Rendering... ", state);
+    });
+  }
+
+  private searchSubscription: Subscription;
 
   width = innerWidth / 2.1;
   height = innerHeight / 1.2;

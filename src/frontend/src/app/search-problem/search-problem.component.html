@@ -20,4 +20,10 @@
     <app-coordinate-system *ngIf="problem==='Pathfinding'" [selectedAlgorithm]="selectedAlgorithm" [selectedProblem]="selectedProblem" [searchQueue]="searchQueue"></app-coordinate-system>
     <app-maze *ngIf="problem==='Maze'" [selectedAlgorithm]="selectedAlgorithm" [selectedProblem]="selectedProblem" [searchQueue]="searchQueue"></app-maze>
   </div>
+
+  <svg [attr.width]="'500'" [attr.height]="'500'" style="background-color:#f0f0f0;">
+    <rect *ngFor="let square of squares" [attr.x]="(square.position.x * 25)" [attr.y]="(square.position.y * 25)" [attr.width]="25" [attr.height]="25" [attr.fill]="'#444444'" />
+    <rect *ngFor="let square of squares" [attr.x]="(square.position.x * 25) + 1" [attr.y]="(square.position.y * 25) + 1" [attr.width]="23" [attr.height]="23" [attr.fill]="square.color" />
+  </svg>
+
 </div>
