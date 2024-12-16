@@ -5,6 +5,8 @@ import {LocationProblem} from "../../problems/location-problem/location-problem"
 import {Location} from "../../problems/location-problem/location";
 import {AStarSearch} from "./a-star-search";
 import {BreadthFirstSearch} from "../breadth-first-search/breadth-first-search";
+import {PathfindingProblem} from "../../problems/pathfinding-problem/pathfinding-problem";
+import {Position} from "../../problems/pathfinding-problem/position";
 
 describe('AStarSearch', () => {
     test('Search should find a path from Berlin to Istanbul', () => {
@@ -95,6 +97,17 @@ describe('AStarSearch', () => {
         expect(state.explored.length).toBe(7);
         expect(state.solution.state).toEqual(Location.Istanbul);
         expect(state.solution.depth).toBe(4);
+    });
+
+    test('Search should use both cost and heuristic to calculate f value', () => {
+        const agent = new AStarSearch();
+        const problem = new PathfindingProblem(new Position(0, 0), new Position(2, 2));
+        const node = agent.startStepSearch(problem);
+        let state = agent.searchStep();
+        while(!state.solution) {
+            state = agent.searchStep();
+        }
+        expect(agent.explored.length).toBe(17);
     });
 });
 

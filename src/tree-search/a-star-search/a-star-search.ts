@@ -53,8 +53,6 @@ export class AStarSearch<S extends Primitive | State, N extends Node<S>, P exten
         return node.cost + (this.weight * node.heuristic);
     }
 
-
-    // TODO: Add step search unit tests
     searchStep(): SearchState<S> {
         this.frontier.sort((a, b) => this.calculateFValue(a) - this.calculateFValue(b));
 
