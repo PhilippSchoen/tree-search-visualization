@@ -27,18 +27,6 @@ export class SearchProblemComponent implements AfterViewInit, OnDestroy {
 
   @Input() set searchState(obs: Observable<SearchState<any>>) {
     this.searchState$ = obs;
-
-    if(this.searchSubscription) {
-      this.searchSubscription.unsubscribe();
-    }
-    this.searchSubscription = obs.subscribe({
-      next: (state) => {
-        console.log("Rendering... ", state);
-      },
-      complete: () => {
-        console.log("Search ended");
-      }
-    });
   }
 
   searchState$: Observable<SearchState<any>>;

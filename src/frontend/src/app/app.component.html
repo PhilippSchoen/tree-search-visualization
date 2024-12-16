@@ -1,4 +1,4 @@
 <div class="flex flex-col sm:flex-row gap-10 px-4">
     <app-search-problem [searchState]="searchState" [searchQueue]="searchQueue" [selectedProblem]="selectedProblem" [selectedAlgorithm]="selectedAlgorithm" (problemChange)="onProblemChange($event)" class="w-full sm:w-1/2"></app-search-problem>
-    <app-search-tree [selectedProblem]="selectedProblem" [selectedAlgorithm]="selectedAlgorithm" (algorithmChange)="onAlgorithmChange($event)" class="w-full sm:w-1/2"></app-search-tree>
+    <app-search-tree [searchState]="searchState" [selectedProblem]="selectedProblem" [selectedAlgorithm]="selectedAlgorithm" (algorithmChange)="onAlgorithmChange($event)" class="w-full sm:w-1/2"></app-search-tree>
 </div>

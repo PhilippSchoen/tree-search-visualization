@@ -25,11 +25,9 @@ export class MazeComponent {
     }
     this.searchSubscription = obs.subscribe({
       next: (state) => {
-        console.log("Rendering pathfinding... ", state);
         this.generateVisualization(state);
       },
       complete: () => {
-        console.log("Search ended pathfinding");
       },
     });
   }

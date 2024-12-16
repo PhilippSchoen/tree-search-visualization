@@ -26,6 +26,7 @@ import {DepthFirstSearch} from '../../../../tree-search/depth-first-search/depth
 import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/bidirectional-search';
 import {SearchAlgorithm} from './entities/search-algorithm';
 import {SearchProblem} from "../../../../problems/search-problem";
+import {Observable, Subscription} from "rxjs";
 
 
 @Component({
@@ -39,6 +40,25 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
   @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
   @Output() algorithmChange = new EventEmitter<SearchAgent<any, any>>();
+
+  @Input() set searchState(obs: Observable<SearchState<any>>) {
+    if(this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+    this.searchSubscription = obs.subscribe({
+      next: (state) => {
+        this.state = state;
+        console.log("Received state: ", state);
+      },
+      complete: () => {
+        console.log("Search ended");
+        // Generate tree
+      }
+    });
+  }
+
+  private searchSubscription: Subscription;
+  private state: SearchState<any>;
 
   searchAlgorithms: Record<SearchAlgorithm, SearchAgent<any, any>> = {
     [SearchAlgorithm.BFS]: new BreadthFirstSearch(),
@@ -173,8 +193,7 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
           if (cluster) {
             cluster.childNodeIds.push(node.state.toString());
           }
-
-
+          
           this.links.push(graphLink);
         }
 
