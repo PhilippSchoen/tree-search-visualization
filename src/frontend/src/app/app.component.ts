@@ -51,18 +51,14 @@ export class AppComponent implements OnInit, OnDestroy {
   search() {
     this.searchStateSubject = new Subject<SearchState<any>>();
     this.searchState = this.searchStateSubject.asObservable();
-    this.performSearch();
-  }
-
-  private performSearch() {
     setTimeout(() => {
       let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
       this.searchStateSubject.next(_.cloneDeep(state));
-      this.performSearchStep();
+      this.performStepSearch();
     });
   }
 
-  private performSearchStep() {
+  private performStepSearch() {
     setTimeout(() => {
       let state = this.selectedAlgorithm.searchStep();
       console.log("Sending data: ", state);
@@ -71,9 +67,9 @@ export class AppComponent implements OnInit, OnDestroy {
         this.searchStateSubject.complete();
       }
       else {
-        this.performSearchStep();
+        this.performStepSearch();
       }
-    }, 0);
+    });
   }
 
 }

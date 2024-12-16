@@ -7,6 +7,8 @@ import {SearchAgent} from "../../../../../tree-search/search-agent";
 import {SearchProblem} from "../../../../../problems/search-problem";
 import {Node} from "../../../../../tree-search/node";
 import {SearchState} from "../../../../../tree-search/search-state";
+import {Observable, Subscription} from "rxjs";
+import {Position} from "../../../../../problems/pathfinding-problem/position";
 
 @Component({
   selector: 'app-maze',
@@ -14,10 +16,25 @@ import {SearchState} from "../../../../../tree-search/search-state";
   templateUrl: './maze.component.html',
   styleUrl: './maze.component.scss'
 })
-export class MazeComponent implements OnChanges {
-  @Input() selectedAlgorithm!: SearchAgent<any, any>;
+export class MazeComponent {
   @Input() selectedProblem!: SearchProblem<any, any>;
-  @Input() searchQueue!: SearchState<any>[];
+
+  @Input() set searchState(obs: Observable<SearchState<any>>) {
+    if(this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+    this.searchSubscription = obs.subscribe({
+      next: (state) => {
+        console.log("Rendering pathfinding... ", state);
+        this.generateVisualization(state);
+      },
+      complete: () => {
+        console.log("Search ended pathfinding");
+      },
+    });
+  }
+
+  private searchSubscription: Subscription;
 
   width = innerWidth / 2.1;
   height = innerHeight / 1.2;
@@ -38,16 +55,8 @@ export class MazeComponent implements OnChanges {
     return lines;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if(this.selectedProblem instanceof MazeProblem) {
-      this.generateVisualization();
-    }
-  }
-
-  // TODO: Switch to Observables for cancellation
-  generateVisualization() {
+  generateVisualization(state: SearchState<any>) {
     this.squares = [];
-    const state = this.searchQueue.shift();
 
     if(state) {
       this.renderWalls();
@@ -56,20 +65,19 @@ export class MazeComponent implements OnChanges {
           this.squares.push({x: (position as MazeState).x, y: (position as MazeState).y, color: '#00FF00'});
       }
 
-      this.drawFrontierAsync(state.frontier).then(() => {
+      for(let node of state.frontier) {
+        this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: '#0000FF'});
+      }
 
-        let solution = state.solution;
-        const solutionNodes: Node<unknown>[] = [];
-        while(solution) {
-          solutionNodes.push(solution);
-          solution = solution.parent;
-        }
-        this.drawSolutionAsync(solutionNodes.reverse()).then(() => {
-          if(this.searchQueue.length > 0) {
-            this.generateVisualization();
-          }
-        });
-      });
+      let solution = state.solution;
+      const solutionNodes: Node<unknown>[] = [];
+      while(solution) {
+        solutionNodes.push(solution);
+        solution = solution.parent;
+      }
+      for(let node of solutionNodes) {
+        this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: '#FF0000'});
+      }
     }
   }
 
@@ -84,32 +92,6 @@ export class MazeComponent implements OnChanges {
         }
       }
     }
-  }
-
-  private async drawFrontierAsync(nodes: Node<unknown>[]) {
-    await this.sleep(1);
-    const node = nodes.shift();
-    this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: '#0000FF'});
-    await this.sleep(50);
-
-    if(nodes.length > 0) {
-      await this.drawFrontierAsync(nodes);
-    }
-  }
-
-  private async drawSolutionAsync(solution: Node<unknown>[]) {
-    if(solution.length > 0) {
-      const node = solution.shift();
-      this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: '#FF0000'});
-      await this.sleep(50);
-      if(solution.length > 0) {
-        await this.drawSolutionAsync(solution);
-      }
-    }
-  }
-
-  private sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 

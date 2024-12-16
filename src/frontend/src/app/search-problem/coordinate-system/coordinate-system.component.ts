@@ -14,17 +14,20 @@ import {Observable, Subscription} from 'rxjs';
   templateUrl: './coordinate-system.component.html',
   styleUrl: './coordinate-system.component.scss'
 })
-export class CoordinateSystemComponent implements OnChanges {
-  @Input() selectedAlgorithm!: SearchAgent<any, any>;
+export class CoordinateSystemComponent {
   @Input() selectedProblem!: SearchProblem<any, any>;
-  @Input() searchQueue!: SearchState<any>[];
 
   @Input() set searchState(obs: Observable<SearchState<any>>) {
     if(this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
-    this.searchSubscription = obs.subscribe((state) => {
-      console.log("Rendering... ", state);
+    this.searchSubscription = obs.subscribe({
+        next: (state) => {
+            this.generateVisualization(state);
+        },
+        complete: () => {
+          console.log("Search ended");
+        },
     });
   }
 
@@ -56,64 +59,25 @@ export class CoordinateSystemComponent implements OnChanges {
   constructor() {
   }
 
-  generateVisualization() {
-    const state = this.searchQueue?.shift();
-
+  generateVisualization(state: SearchState<any>) {
     if(state) {
       this.squares = [];
       for(let position of state.explored) {
         this.squares.push({position, color: '#00FF00'});
       }
+      for(let node of state.frontier) {
+        this.squares.push({position: node.state as Position, color: '#0000FF'});
+      }
 
-      this.drawFrontierAsync(state.frontier).then(() => {
-        let solution = state.solution;
+      let solution = state.solution;
         const solutionNodes: Node<unknown>[] = [];
         while(solution) {
             solutionNodes.push(solution);
             solution = solution.parent;
         }
-        if(solutionNodes.length > 0) {
-          this.drawSolutionAsync(solutionNodes.reverse()).then(() => {
-            if(this.searchQueue.length > 0) {
-              this.generateVisualization();
-            }
-          });
-        } else {
-            if(this.searchQueue.length > 0) {
-                this.generateVisualization();
-            }
+        for(let node of solutionNodes) {
+          this.squares.push({position: node.state as Position, color: '#FF0000'});
         }
-      });
-
     }
-  }
-
-  private async drawFrontierAsync(nodes: Node<unknown>[]) {
-    const node = nodes.shift();
-    this.squares.push({position: node.state as Position, color: '#0000FF'});
-
-    if(nodes.length > 0) {
-      await this.drawFrontierAsync(nodes);
-    }
-  }
-
-  private async drawSolutionAsync(nodes: Node<unknown>[]) {
-    const node = nodes.shift();
-    this.squares.push({position: node.state as Position, color: '#FF0000'});
-    await this.sleep(50);
-
-    if(nodes.length > 0) {
-      await this.drawSolutionAsync(nodes);
-    }
-  }
-
-  ngOnChanges(changes:SimpleChanges) {
-    if(this.selectedProblem instanceof PathfindingProblem) {
-      this.generateVisualization();
-    }
-  }
-
-  private sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

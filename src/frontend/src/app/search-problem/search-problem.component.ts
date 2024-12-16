@@ -26,15 +26,14 @@ export class SearchProblemComponent implements AfterViewInit, OnDestroy {
   @Output() problemChange = new EventEmitter<SearchProblem<any, any>>();
 
   @Input() set searchState(obs: Observable<SearchState<any>>) {
+    this.searchState$ = obs;
+
     if(this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
     this.searchSubscription = obs.subscribe({
       next: (state) => {
         console.log("Rendering... ", state);
-        for(let i = 0; i < state.frontier.length; i++) {
-          this.squares.push({position: new Position((state.frontier[i].state as Position).x, (state.frontier[i].state as Position).y), color: '#FF0000'});
-        }
       },
       complete: () => {
         console.log("Search ended");
@@ -42,16 +41,12 @@ export class SearchProblemComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  queue: {position: Position, color: string}[] = [];
-
-  squares: {position: Position, color: string}[] = [
-    {position: new Position(0, 0), color: '#0000FF'},
-  ];
+  searchState$: Observable<SearchState<any>>;
 
   private searchSubscription: Subscription;
 
   searchProblems: Record<Problem, SearchProblem<any, any>> = {
-    [Problem.Pathfinding]: new PathfindingProblem(new Position(0, 0), new Position(7, 7)),
+    [Problem.Pathfinding]: new PathfindingProblem(new Position(0, 0), new Position(4, 4)),
     [Problem.Maze]: new MazeProblem(new MazeState(1, 1)),
   }
 

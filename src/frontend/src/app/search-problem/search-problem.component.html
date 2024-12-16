@@ -17,13 +17,8 @@
   <button disabled type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Solution</button>
   <div *ngFor="let problem of searchProblemValues" class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
        id="{{ problem }}" role="tabpanel" [attr.aria-labelledby]="problem + '-tab'">
-    <app-coordinate-system *ngIf="problem==='Pathfinding'" [selectedAlgorithm]="selectedAlgorithm" [selectedProblem]="selectedProblem" [searchQueue]="searchQueue"></app-coordinate-system>
-    <app-maze *ngIf="problem==='Maze'" [selectedAlgorithm]="selectedAlgorithm" [selectedProblem]="selectedProblem" [searchQueue]="searchQueue"></app-maze>
+    <app-coordinate-system *ngIf="problem==='Pathfinding'" [searchState]="searchState$" [selectedProblem]="selectedProblem"></app-coordinate-system>
+    <app-maze *ngIf="problem==='Maze'" [searchState]="searchState$" [selectedProblem]="selectedProblem"></app-maze>
   </div>
-
-  <svg [attr.width]="'500'" [attr.height]="'500'" style="background-color:#f0f0f0;">
-    <rect *ngFor="let square of squares" [attr.x]="(square.position.x * 25)" [attr.y]="(square.position.y * 25)" [attr.width]="25" [attr.height]="25" [attr.fill]="'#444444'" />
-    <rect *ngFor="let square of squares" [attr.x]="(square.position.x * 25) + 1" [attr.y]="(square.position.y * 25) + 1" [attr.width]="23" [attr.height]="23" [attr.fill]="square.color" />
-  </svg>
 
 </div>
