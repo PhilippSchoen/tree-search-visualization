@@ -1,6 +1,0 @@
-package-lock.json
-node_modules
-dist
-.angular
-src/frontend/.vscode
-src/frontend/.editorconfig
