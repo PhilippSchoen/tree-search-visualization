@@ -9,8 +9,8 @@
     "start": "node dist/index.js",
     "ng": "ng",
     "start-frontend": "ng serve",
-    "build-frontend": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "build-frontend": "ng prod-build",
+    "watch": "ng prod-build --watch --configuration development",
     "test-frontend": "ng test"
   },
   "author": "",
