@@ -48,11 +48,14 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
     this.searchSubscription = obs.subscribe({
       next: (state) => {
         this.state = state;
+        this.generateTreeData(state);
         console.log("Received state: ", state);
       },
       complete: () => {
-        console.log("Search ended");
+        console.log("Tree data: ", this.frontierNodes, this.exploredNodes, this.solutionNodes);
         // Generate tree
+        this.drawTree(this.state);
+        console.log("Tree drawn: ", this.nodes, this.links);
       }
     });
   }
@@ -83,11 +86,11 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
       });
     });
     this.selectedAlgorithm = this.searchAlgorithms[SearchAlgorithm.BFS];
-    this.generateTree();
+    // this.generateTree();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.generateTree();
+    // this.generateTree();
   }
 
   handleTabChange(event: MouseEvent): void {
@@ -100,7 +103,7 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
     this.links = [];
     this.nodes = [];
 
-    this.generateTree();
+    // this.generateTree();
   }
 
   constructor(private cdr: ChangeDetectorRef) {
@@ -113,21 +116,21 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
   layout = new DagreNodesOnlyLayout();
 
   setColor(node: { label: string }) {
-    if(this.solutionNodes.includes(node.label)) {
+    if(this.solutionNodes.find(n => n.id === node.label)) {
       return '#FF0000';
     }
-    if(this.frontierNodes.includes(node.label)) {
+    if(this.frontierNodes.find(n => n.id === node.label)) {
       return '#0000FF';
     }
-    if(this.exploredNodes.includes(node.label)) {
+    if(this.exploredNodes.find(n => n.id === node.label)) {
       return '#00FF00';
     }
     return '#FFFFFF';
   }
 
-  exploredNodes: string[] = [];
-  frontierNodes: string[] = [];
-  solutionNodes: string[] = [];
+  exploredNodes: {id: string, parent?: string}[] = [];
+  frontierNodes: {id: string, parent?: string}[] = [];
+  solutionNodes: {id: string, parent?: string}[] = [];
 
 
   generateTree() {
@@ -141,66 +144,85 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
   }
 
   generateTreeData(searchState: SearchState<any>) {
-    const clusters: GraphCluster[] = [];
 
+    // Called for all intermediate search results
+
+    // Move reached nodes from frontier to explored
     this.frontierNodes.forEach(node => {
-      if(!searchState.frontier.find(n => n.state.toString() === node)) {
+      if(!searchState.frontier.find(n => n.state.toString() === node.id)) {
         this.frontierNodes = this.frontierNodes.filter(n => n !== node);
         this.exploredNodes.push(node);
       }
     });
 
+    // Add frontier nodes
+    for(const node of searchState?.frontier) {
+      if(this.frontierNodes.find(n => n.id === node.state.toString())) {
+        continue;
+      }
+      this.frontierNodes.push({id: node.state.toString(), parent: node.parent?.state.toString()});
+    }
+
+    // Add solution nodes
     if(searchState.solution) {
       let solution = searchState.solution;
       this.solutionNodes = [];
       while(solution) {
-        this.solutionNodes.push(solution.state.toString());
+        this.solutionNodes.push({id: solution.state.toString(), parent: solution.parent.state.toString()});
         solution = solution.parent;
       }
     }
 
-    // For every node in the frontier: Add to the graph, use parent for link
-    for(const node of searchState?.frontier) {
+  }
 
-      if (this.nodes.find(graphNode => graphNode.id === node.state.toString()) === undefined) {
+  private drawTree(state: SearchState<any>) {
+    console.log("Drawing");
+    const clusters: GraphCluster[] = [];
+    this.nodes = [];
+    this.links = [];
 
-        this.frontierNodes.push(node.state.toString());
-
-        const graphNode: GraphNode = {
-          id: node.state.toString(),
-          label: node.state.toString()
-        };
-
-        if (clusters.find(cluster => cluster.id === ("cluster-" + node.state.toString())) === undefined) {
-          const cluster: GraphCluster = {
-            id: "cluster-" + node.state.toString(),
-            label: "cluster-" + node.state.toString()
-          };
-          clusters.push(cluster);
-        }
-
-        this.nodes.push(graphNode);
-        // this.nodes.push(graphNode);
-        if (node.parent) {
-          const graphLink: GraphLink = {
-            id: node.state.toString(),
-            source: node.parent.state.toString(),
-            target: node.state.toString(),
-            label: 'is parent of'
-          };
-
-          const cluster = clusters.find(cluster => cluster.id === ("cluster-" + node.parent.state.toString()));
-          if (cluster) {
-            cluster.childNodeIds.push(node.state.toString());
-          }
-          
-          this.links.push(graphLink);
-        }
-
-      }
-
+    // Create clusters for each node
+    for(const node of this.exploredNodes) {
+      const cluster: GraphCluster = {
+        id: "cluster-" + node.id,
+        label: "cluster-" + node.id,
+        childNodeIds: []
+      };
+      clusters.push(cluster);
     }
 
+    // Draw explored
+    for(const explored of this.exploredNodes) {
+
+      const graphNode: GraphNode = {
+        id: explored.id,
+        label: explored.id
+      };
+
+      // Assign to parent cluster
+      if(explored.parent) {
+        const cluster = clusters.find(cluster => cluster.id === ("cluster-" + explored.parent));
+        if (cluster) {
+          cluster.childNodeIds.push(explored.id);
+        }
+
+        // Create link
+        const graphLink: GraphLink = {
+          id: explored.id,
+          source: explored.parent,
+          target: explored.id,
+          label: 'is parent of'
+        };
+
+        this.links.push(graphLink);
+      }
+
+      this.nodes.push(graphNode);
+    }
+
+    this.frontierNodes = [];
+    this.exploredNodes = [];
+    this.solutionNodes = [];
   }
 
 }
