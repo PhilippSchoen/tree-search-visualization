@@ -18,11 +18,9 @@ import {Observable, Subscription} from 'rxjs';
   templateUrl: './search-problem.component.html',
   styleUrl: './search-problem.component.scss'
 })
-export class SearchProblemComponent implements AfterViewInit, OnDestroy {
+export class SearchProblemComponent implements AfterViewInit {
   @ViewChild('problemTab', {static: false}) problemTab: ElementRef;
-  @Input() selectedAlgorithm!: SearchAgent<any, any>;
   @Input() selectedProblem!: SearchProblem<any, any>;
-  @Input() searchQueue!: SearchState<any>[];
   @Output() problemChange = new EventEmitter<SearchProblem<any, any>>();
 
   @Input() set searchState(obs: Observable<SearchState<any>>) {
@@ -30,8 +28,6 @@ export class SearchProblemComponent implements AfterViewInit, OnDestroy {
   }
 
   searchState$: Observable<SearchState<any>>;
-
-  private searchSubscription: Subscription;
 
   searchProblems: Record<Problem, SearchProblem<any, any>> = {
     [Problem.Pathfinding]: new PathfindingProblem(new Position(0, 0), new Position(4, 4)),
@@ -46,10 +42,6 @@ export class SearchProblemComponent implements AfterViewInit, OnDestroy {
         this.handleTabChange(event);
       });
     });
-  }
-
-  ngOnDestroy() {
-    this.searchSubscription?.unsubscribe();
   }
 
   handleTabChange(event: MouseEvent): void {
