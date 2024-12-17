@@ -42,6 +42,8 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
   @Output() algorithmChange = new EventEmitter<SearchAgent<any, any>>();
 
   @Input() set searchState(obs: Observable<SearchState<any>>) {
+    this.searchNodes = [];
+
     if(this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
@@ -116,32 +118,20 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
   layout = new DagreNodesOnlyLayout();
 
   setColor(node: { label: string }) {
-    if(this.solutionNodes.find(n => n.id === node.label)) {
-      return '#FF0000';
+    console.log("Setting color", node.label);
+    const test = this.searchNodes.find(n => n.id === node.label);
+    console.log("SearchNodes", this.searchNodes);
+    if(test) {
+      return test.color;
     }
-    if(this.frontierNodes.find(n => n.id === node.label)) {
-      return '#0000FF';
-    }
-    if(this.exploredNodes.find(n => n.id === node.label)) {
-      return '#00FF00';
-    }
-    return '#FFFFFF';
+    return '#FFF';
   }
 
   exploredNodes: {id: string, parent?: string}[] = [];
   frontierNodes: {id: string, parent?: string}[] = [];
   solutionNodes: {id: string, parent?: string}[] = [];
 
-
-  generateTree() {
-      let state = this.selectedAlgorithm.startStepSearch(this.selectedProblem);
-      this.generateTreeData(state);
-      while(!state.solution) {
-        state = this.selectedAlgorithm.searchStep();
-        this.generateTreeData(state);
-      }
-      this.generateTreeData(state);
-  }
+  searchNodes: {id: string, color: string, parent?: string}[] = [];
 
   generateTreeData(searchState: SearchState<any>) {
 
@@ -155,12 +145,24 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
       }
     });
 
+    const frontierNodes = this.searchNodes.filter(node => node.color === '#0000FF');
+    for(const node of frontierNodes) {
+      if(!searchState.frontier.find(n => n.state.toString() === node.id)) {
+        node.color = '#00FF00';
+      }
+    }
+
     // Add frontier nodes
     for(const node of searchState?.frontier) {
       if(this.frontierNodes.find(n => n.id === node.state.toString())) {
         continue;
       }
       this.frontierNodes.push({id: node.state.toString(), parent: node.parent?.state.toString()});
+
+      if(this.searchNodes.find(n => n.id === node.state.toString())) {
+        continue;
+      }
+      this.searchNodes.push({id: node.state.toString(), color: '#0000FF', parent: node.parent?.state.toString()});
     }
 
     // Add solution nodes
@@ -182,7 +184,7 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
     this.links = [];
 
     // Create clusters for each node
-    for(const node of this.exploredNodes) {
+    for(const node of this.searchNodes) {
       const cluster: GraphCluster = {
         id: "cluster-" + node.id,
         label: "cluster-" + node.id,
@@ -192,7 +194,7 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
     }
 
     // Draw explored
-    for(const explored of this.exploredNodes) {
+    for(const explored of this.searchNodes) {
 
       const graphNode: GraphNode = {
         id: explored.id,
@@ -223,6 +225,7 @@ export class SearchTreeComponent implements AfterViewInit, OnChanges {
     this.frontierNodes = [];
     this.exploredNodes = [];
     this.solutionNodes = [];
+    // this.searchNodes = [];
   }
 
 }
