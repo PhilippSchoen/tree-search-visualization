@@ -14,6 +14,7 @@ import {DepthFirstSearch} from '../../../../tree-search/depth-first-search/depth
 import {BidirectionalSearch} from '../../../../tree-search/bidirectional-search/bidirectional-search';
 import {SearchAlgorithm} from './entities/search-algorithm';
 import {Observable, Subscription} from "rxjs";
+import {colors} from '../../shared/colors';
 
 
 @Component({
@@ -95,10 +96,10 @@ export class SearchTreeComponent {
 
   private generateTreeData(searchState: SearchState<any>) {
     // Move reached nodes from frontier to explored
-    const frontierNodes = this.searchNodes.filter(node => node.color === '#0000FF');
+    const frontierNodes = this.searchNodes.filter(node => node.color === colors.frontier);
     for(const node of frontierNodes) {
       if(!searchState.frontier.find(n => n.state.toString() === node.id)) {
-        node.color = '#00FF00';
+        node.color = colors.explored;
       }
     }
 
@@ -107,7 +108,7 @@ export class SearchTreeComponent {
       if(this.searchNodes.find(n => n.id === node.state.toString())) {
         continue;
       }
-      this.searchNodes.push({id: node.state.toString(), color: '#0000FF', parent: node.parent?.state.toString()});
+      this.searchNodes.push({id: node.state.toString(), color: colors.frontier, parent: node.parent?.state.toString()});
     }
 
     // Add solution nodes
@@ -116,7 +117,7 @@ export class SearchTreeComponent {
       while(solution) {
         const node = this.searchNodes.find(n => n.id === solution.state.toString());
         if(node) {
-          node.color = '#FF0000';
+          node.color = colors.solution;
         }
         solution = solution.parent;
       }

@@ -7,6 +7,7 @@ import {SearchAgent} from '../../../../../tree-search/search-agent';
 import {SearchProblem} from "../../../../../problems/search-problem";
 import {Node} from "../../../../../tree-search/node";
 import {Observable, Subscription} from 'rxjs';
+import {colors} from '../../../shared/colors';
 
 @Component({
   selector: 'app-coordinate-system',
@@ -63,10 +64,10 @@ export class CoordinateSystemComponent {
     if(state) {
       this.squares = [];
       for(let position of state.explored) {
-        this.squares.push({position, color: '#00FF00'});
+        this.squares.push({position, color: colors.explored});
       }
       for(let node of state.frontier) {
-        this.squares.push({position: node.state as Position, color: '#0000FF'});
+        this.squares.push({position: node.state as Position, color: colors.frontier});
       }
 
       let solution = state.solution;
@@ -76,7 +77,7 @@ export class CoordinateSystemComponent {
             solution = solution.parent;
         }
         for(let node of solutionNodes) {
-          this.squares.push({position: node.state as Position, color: '#FF0000'});
+          this.squares.push({position: node.state as Position, color: colors.solution});
         }
     }
   }

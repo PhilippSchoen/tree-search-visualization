@@ -9,6 +9,7 @@ import {Node} from "../../../../../tree-search/node";
 import {SearchState} from "../../../../../tree-search/search-state";
 import {Observable, Subscription} from "rxjs";
 import {Position} from "../../../../../problems/pathfinding-problem/position";
+import {colors} from '../../../shared/colors';
 
 @Component({
   selector: 'app-maze',
@@ -60,11 +61,11 @@ export class MazeComponent {
       this.renderWalls();
 
       for(let position of state.explored) {
-          this.squares.push({x: (position as MazeState).x, y: (position as MazeState).y, color: '#00FF00'});
+          this.squares.push({x: (position as MazeState).x, y: (position as MazeState).y, color: colors.explored});
       }
 
       for(let node of state.frontier) {
-        this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: '#0000FF'});
+        this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: colors.frontier});
       }
 
       let solution = state.solution;
@@ -74,7 +75,7 @@ export class MazeComponent {
         solution = solution.parent;
       }
       for(let node of solutionNodes) {
-        this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: '#FF0000'});
+        this.squares.push({x: (node.state as MazeState).x, y: (node.state as MazeState).y, color: colors.solution});
       }
     }
   }
@@ -85,7 +86,7 @@ export class MazeComponent {
       for(let i = 0; i < this.selectedProblem.initialState.maze.size; i++) {
         for(let j = 0; j < this.selectedProblem.initialState.maze.size; j++) {
           if(this.selectedProblem.initialState.maze.blocks[j][i] === MazeBlock.Barrier) {
-            this.squares.push({x: i, y: j, color: '#000000'});
+            this.squares.push({x: i, y: j, color: colors.wall});
           }
         }
       }
