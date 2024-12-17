@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {NgFor} from '@angular/common';
 import {MazeBlock} from '../../../../../problems/maze-problem/maze-block';
 import {MazeProblem} from '../../../../../problems/maze-problem/maze-problem';
@@ -10,10 +10,12 @@ import {SearchState} from "../../../../../tree-search/search-state";
 import {Observable, Subscription} from "rxjs";
 import {Position} from "../../../../../problems/pathfinding-problem/position";
 import {colors} from '../../../shared/colors';
+import {Maze} from '../../../../../problems/maze-problem/maze';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-maze',
-  imports: [NgFor],
+  imports: [NgFor, FormsModule],
   templateUrl: './maze.component.html',
   styleUrl: './maze.component.scss'
 })
@@ -33,6 +35,8 @@ export class MazeComponent {
     });
   }
 
+  @Output() problemChange = new EventEmitter<SearchProblem<any, any>>();
+
   private searchSubscription: Subscription;
 
   width = innerWidth / 2.1;
@@ -40,6 +44,13 @@ export class MazeComponent {
 
   squares: { x: number, y: number, color: string }[] = [];
   gridLines = this.generateGridLines();
+
+  mazeSize: number = 0;
+
+  updateProblem() {
+    this.selectedProblem = new MazeProblem(new MazeState(1, 1, new Maze(this.mazeSize)));
+    this.problemChange.emit(this.selectedProblem);
+  }
 
   private generateGridLines() {
     const lines: { x1: number, y1: number, x2: number, y2: number }[] = [];

@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output, SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {NgFor, NgIf} from "@angular/common";
 import {CoordinateSystemComponent} from './coordinate-system/coordinate-system.component';
 import {SearchAgent} from '../../../../tree-search/search-agent';
@@ -49,6 +59,12 @@ export class SearchProblemComponent implements AfterViewInit {
     const selectedTabId = target.getAttribute('aria-controls');
 
     this.selectedProblem = this.searchProblems[selectedTabId as Problem];
+    this.onProblemChange(this.selectedProblem as SearchProblem<any, any>);
+
+  }
+
+  onProblemChange(newProblem: SearchProblem<any, any>) {
+    this.selectedProblem = newProblem;
     this.problemChange.emit(this.selectedProblem);
   }
 

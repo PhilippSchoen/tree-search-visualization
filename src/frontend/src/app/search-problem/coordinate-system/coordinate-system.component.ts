@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {Position} from '../../../../../problems/pathfinding-problem/position';
 import {PathfindingProblem} from '../../../../../problems/pathfinding-problem/pathfinding-problem';
@@ -8,10 +8,11 @@ import {SearchProblem} from "../../../../../problems/search-problem";
 import {Node} from "../../../../../tree-search/node";
 import {Observable, Subscription} from 'rxjs';
 import {colors} from '../../../shared/colors';
+import {FormsModule, NgModel} from '@angular/forms';
 
 @Component({
   selector: 'app-coordinate-system',
-  imports: [NgFor, NgIf],
+  imports: [NgFor, NgIf, FormsModule],
   templateUrl: './coordinate-system.component.html',
   styleUrl: './coordinate-system.component.scss'
 })
@@ -32,6 +33,8 @@ export class CoordinateSystemComponent {
     });
   }
 
+  @Output() problemChange = new EventEmitter<SearchProblem<any, any>>();
+
   private searchSubscription: Subscription;
 
   width = innerWidth / 2.1;
@@ -44,6 +47,14 @@ export class CoordinateSystemComponent {
   gridLines = this.generateGridLines();
   squares: {position: Position, color: string}[] = [];
 
+  goalX: number = 0; // Initial goal row position
+  goalY: number = 0; // Initial goal column position
+
+  updateProblem() {
+    this.selectedProblem = new PathfindingProblem(new Position(0, 0), new Position(this.goalX, this.goalY));
+    this.problemChange.emit(this.selectedProblem);
+  }
+
   generateGridLines() {
     const lines: { x1: number, y1: number, x2: number, y2: number }[] = [];
     const step = 25; // Distance between grid lines
@@ -55,9 +66,6 @@ export class CoordinateSystemComponent {
       lines.push({ x1: 0, y1: y, x2: this.width, y2: y });
     }
     return lines;
-  }
-
-  constructor() {
   }
 
   generateVisualization(state: SearchState<any>) {

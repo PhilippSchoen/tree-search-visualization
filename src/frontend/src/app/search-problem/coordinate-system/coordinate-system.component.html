@@ -1,4 +1,37 @@
 
+<div class="p-4 w-max mx-auto rounded-lg">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div>
+      <label for="inputX" class="block text-sm font-medium text-gray-700">Goal X</label>
+      <input
+        type="number"
+        id="inputX"
+        class="mt-1 block w-full border-explored rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+        placeholder="4"
+        [(ngModel)]="goalX"
+      />
+    </div>
+    <div>
+      <label for="inputY" class="block text-sm font-medium text-gray-700">Goal Y</label>
+      <input
+        type="number"
+        id="inputY"
+        class="mt-1 block w-full border-explored rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+        placeholder="4"
+        [(ngModel)]="goalY"
+      />
+    </div>
+    <div class="flex items-end">
+      <button
+        type="button"
+        class="w-full bg-frontier text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        (click)="updateProblem()"
+      >
+        Search
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="w-full overflow-auto">
   <svg [attr.width]="width" [attr.height]="height" style="background-color:#f0f0f0;">
@@ -17,7 +50,7 @@
     </g>
 
     <!--   Frontier, Explored, Solution  -->
-    <rect *ngFor="let square of squares" [attr.x]="xCenter + (square.position.x * 25)" [attr.y]="yCenter + (square.position.y * 25)" [attr.width]="25" [attr.height]="25" [attr.fill]="'#444444'" />
+    <rect *ngFor="let square of squares" [attr.x]="xCenter + (square.position.x * 25)" [attr.y]="yCenter + (square.position.y * 25)" [attr.width]="25" [attr.height]="25" [attr.fill]="'#000000'" />
     <rect *ngFor="let square of squares" [attr.x]="xCenter + (square.position.x * 25) + 1" [attr.y]="yCenter + (square.position.y * 25) + 1" [attr.width]="23" [attr.height]="23" [attr.fill]="square.color" />
   </svg>
 </div>

@@ -4,6 +4,12 @@ export class Maze {
 
     constructor(public size: number = 21) {
         this.blocks = this.generateMaze(size, size);
+
+        // Ensure dimensions are odd for proper generation
+        this.size = (this.size % 2 === 0) ? this.size + 1 : this.size;
+
+        // Ensure maze is at least 5x5
+        this.size = Math.max(this.size, 5);
     }
 
     blocks: MazeBlock[][];
