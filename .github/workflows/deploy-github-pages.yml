@@ -1,0 +1,88 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  pages: write
+  id-token: write
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci --force
+
+      - name: Start the build
+        run: ng build --configuration=production
+
+      - name: Archive artifact for deployment (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory "./dist/frontend" \
+            -cvf "$RUNNER_TEMP/artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            .
+
+      - name: Archive artifact for deployment (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          gtar \
+            --dereference --hard-dereference \
+            --directory "./dist/frontend/browser" \
+            -cvf "$RUNNER_TEMP/artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            .
+
+      - name: Archive artifact for deployment (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory "./dist/frontend/browser" \
+            -cvf "$RUNNER_TEMP\artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            --force-local \
+            .
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
